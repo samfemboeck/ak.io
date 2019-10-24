@@ -1,66 +1,44 @@
-import {Vector} from "./Vector.js";
+import {Sprite} from "./Sprite.js";
+import {Bullet} from "./Bullet.js";
 
-export class Gun
+export class Gun extends Sprite
 {
-
     constructor(canvas)
     {
-        this.canvas = canvas;
+        super(canvas);
         this.width = 100;
         this.height = 20;
+        this.speed = 5;
         this.x = this.canvas.width / 2 - 0.5 * this.width;
         this.y = this.canvas.height / 2 - 0.5 * this.height;
-        this._rotation = Math.PI;
-
-        $(this.canvas).mousemove($.proxy(this.mouseChanged, this));
+        this.bullets = [];
     }
 
-    get pivot()
+    update()
     {
-        let x = this.x + 0.5 * this.width;
-        let y = this.y - 0.5 * this.height;
-        return new Vector(x, y);
-    }
-
-    get rotation()
-    {
-        return this._rotation;
-    }
-
-    set rotation(rotation)
-    {
-        if (rotation !== this.rotation)
+        super.update();
+        for (let bullet of this.bullets)
         {
-            this.rotation = rotation;
-            this.rotate(rotation);
+            bullet.update();
         }
-    }
-
-    mouseChanged(event)
-    {
-        let mousePos = new Vector(event.pageX, event.pageY);
-        let mouseDirection = mousePos.minus(this.pivot);
-        this.rotation = Math.atan2(mouseDirection.x, mouseDirection.y);
     }
 
     draw()
     {
         let ctx = this.canvas.getContext("2d");
         ctx.save();
+        ctx.translate(this.pivot.x, this.pivot.y);
         ctx.rotate(this.rotation);
-        ctx.fillStyle = 'rgb(200, 0, 0)';
-        ctx.fillRect(this.x, this.y, 100, 20);
+        ctx.fillStyle = '#000';
+        ctx.fillRect(-0.5 * this.width, -0.5 * this.height, this.width, this.height);
         ctx.restore();
     }
 
-    rotate()
+    shoot()
     {
-
-    }
-
-    move(x, y)
-    {
-        this.x += x;
-        this.y += y;
+        let bullet = new Bullet(this.canvas, this.speed * 4, this.rotation, this.velocity);
+        bullet.x = this.pivot.x;
+        bullet.y = this.pivot.y;
+        this.bullets.push(bullet);
     }
 }

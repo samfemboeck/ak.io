@@ -6,6 +6,17 @@ export class Vector
         this.y = y;
     }
 
+    static getUnit(pos1, pos2)
+    {
+        return pos2.minus(pos1).normalize();
+    }
+
+    isApproximately(vector)
+    {
+        let diff = vector.minus(this);
+        return Math.abs(diff.x) < 2 && Math.abs(diff.y) < 2;
+    }
+
     plus(vector)
     {
         this.x += vector.x;
@@ -15,9 +26,12 @@ export class Vector
 
     minus(vector)
     {
-        this.x -= vector.x;
-        this.y -= vector.y;
-        return this;
+        return new Vector(this.x - vector.x, this.y - vector.y);
+    }
+
+    equals(vector)
+    {
+        return this.x === vector.x && this.y === vector.y;
     }
 
     get magnitude()
