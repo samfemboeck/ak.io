@@ -3,6 +3,7 @@ import {Vector} from "./Vector.js";
 
 // TODO fix slip-through bug
 // TODO Bullets löschen wenn außerhalb canvas
+// TODO offset von ctx.translate() berechnen
 export class Game
 {
     constructor()
