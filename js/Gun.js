@@ -8,7 +8,7 @@ export class Gun extends Sprite
         super(canvas);
         this.width = 100;
         this.height = 20;
-        this.speed = 0;
+        this.speed = 3;
         this.x = this.canvas.width / 2 - 0.5 * this.width;
         this.y = this.canvas.height / 2 - 0.5 * this.height;
         this.bullets = [];

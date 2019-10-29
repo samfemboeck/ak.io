@@ -9,6 +9,7 @@ export class Sprite
         this.width = 0;
         this.height = 0;
         this.rotation = Math.PI;
+        this.direction = new Vector(0, 0);
         this.velocity = new Vector(0, 0);
     }
 
@@ -21,14 +22,15 @@ export class Sprite
 
     update()
     {
-        this.draw();
+        this.velocity = Vector.times(this.direction, this.speed);
         this.move();
+        this.draw();
     }
 
     move()
     {
-        this.x += this.velocity.x * this.speed;
-        this.y += this.velocity.y * this.speed;
+        this.x += this.velocity.x;
+        this.y += this.velocity.y;
     }
 
     draw()

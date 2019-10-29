@@ -1,5 +1,6 @@
 import {Gun} from "./Gun.js";
 import {Vector} from "./Vector.js";
+import {Map} from "./Map.js";
 
 // TODO fix slip-through bug
 // TODO Bullets löschen wenn außerhalb canvas
@@ -9,13 +10,15 @@ export class Game
     constructor()
     {
         this.canvas = $("#canvas")[0];
-        this.canvas.width = window.innerWidth - 10;
-        this.canvas.height = window.innerHeight - 10;
+        this.ctx = this.canvas.getContext("2d");
+        this.canvas.width = window.innerWidth - 4;
+        this.canvas.height = window.innerHeight - 4;
         this.gun = new Gun(this.canvas);
         this.mousePos = new Vector(0, 0);
         this.mouseDirUnit = new Vector(0, 0);
         this.isActive = true;
         this.shootInterval = null;
+        this.map = new Map(5000, 5000);
 
         $(this.canvas).mousemove($.proxy(this.handleMouse, this));
         $(document).mousedown($.proxy(this.handleMouseDown, this));
@@ -25,14 +28,17 @@ export class Game
 
     start()
     {
-        this.main();
+        this.map.generate();
+        this.mainLoop();
     }
 
     handleMouse(event)
     {
         this.mousePos.x = event.pageX;
         this.mousePos.y = event.pageY;
-        this.mouseDirUnit = Vector.getUnit(this.gun.pivot, this.mousePos);
+        let canvasOffset = new Vector(-this.ctx.getTransform().e, -this.ctx.getTransform().f);
+        let mousePos = Vector.add(this.mousePos, canvasOffset);
+        this.mouseDirUnit = Vector.getUnit(this.gun.pivot, mousePos);
         this.gun.rotation = -Math.atan2(this.mouseDirUnit.x, this.mouseDirUnit.y) - 0.5 * Math.PI;
     }
 
@@ -55,23 +61,17 @@ export class Game
         }
     }
 
-    main()
+    mainLoop()
     {
-        window.requestAnimationFrame(() => this.main());
+        window.requestAnimationFrame(() => this.mainLoop());
         if (!this.isActive) return;
-
         let ctx = this.canvas.getContext("2d");
-        ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        ctx.clearRect(0, 0, this.map.width, this.map.height);
+        let translateVector = Vector.invert(this.gun.velocity);
+        ctx.translate(translateVector.x, translateVector.y);
+        ctx.drawImage(this.map.image, 0, 0);
 
-        if (this.mousePos.isApproximately(this.gun.pivot))
-        {
-            this.gun.velocity = new Vector(0, 0);
-        }
-        else
-        {
-            this.gun.velocity = this.mouseDirUnit;
-        }
-
+        this.gun.direction = this.mouseDirUnit;
         this.gun.update();
     }
 }

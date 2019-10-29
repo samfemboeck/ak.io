@@ -8,30 +8,27 @@ export class Vector
 
     static getUnit(pos1, pos2)
     {
-        return pos2.minus(pos1).normalize();
+        return Vector.substract(pos2, pos1).normalize();
     }
 
-    isApproximately(vector)
+    static substract(v1, v2)
     {
-        let diff = vector.minus(this);
-        return Math.abs(diff.x) < 2 && Math.abs(diff.y) < 2;
+        return new Vector(v1.x - v2.x, v1.y - v2.y);
     }
 
-    plus(vector)
+    static add(v1, v2)
     {
-        this.x += vector.x;
-        this.y += vector.y;
-        return this;
+        return new Vector(v1.x + v2.x, v1.y + v2.y);
     }
 
-    minus(vector)
+    static invert(vector)
     {
-        return new Vector(this.x - vector.x, this.y - vector.y);
+        return new Vector(-vector.x, -vector.y);
     }
 
-    equals(vector)
+    static times(vector, factor)
     {
-        return this.x === vector.x && this.y === vector.y;
+        return new Vector(vector.x * factor, vector.y * factor);
     }
 
     get magnitude()
