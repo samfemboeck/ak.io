@@ -2,39 +2,48 @@ import {Vector} from "./Vector.js";
 
 export class Sprite
 {
-    constructor(canvas)
+    constructor(ctx)
     {
-        this.canvas = canvas;
+        this.ctx = ctx;
         this.speed = 0;
         this.width = 0;
         this.height = 0;
         this.rotation = Math.PI;
         this.direction = new Vector(0, 0);
-        this.velocity = new Vector(0, 0);
+        this.position = new Vector(0, 0);
     }
 
     get pivot()
     {
-        let x = this.x + 0.5 * this.width;
-        let y = this.y - 0.5 * this.height;
+        let x = this.position.x + 0.5 * this.width;
+        let y = this.position.y - 0.5 * this.height;
         return new Vector(x, y);
+    }
+
+    get velocity()
+    {
+        return Vector.times(this.direction, this.speed);
     }
 
     update()
     {
-        this.velocity = Vector.times(this.direction, this.speed);
         this.move();
         this.draw();
     }
 
     move()
     {
-        this.x += this.velocity.x;
-        this.y += this.velocity.y;
+        this.position.x += this.velocity.x;
+        this.position.y += this.velocity.y;
     }
 
     draw()
     {
-        // implement in child class
+        this.ctx.save();
+        this.ctx.translate(this.pivot.x, this.pivot.y);
+        this.ctx.rotate(this.rotation);
+        this.ctx.fillStyle = '#000';
+        this.ctx.fillRect(-0.5 * this.width, -0.5 * this.height, this.width, this.height);
+        this.ctx.restore();
     }
 }

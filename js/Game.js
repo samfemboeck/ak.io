@@ -2,28 +2,28 @@ import {Gun} from "./Gun.js";
 import {Vector} from "./Vector.js";
 import {Map} from "./Map.js";
 
-// TODO fix slip-through bug
-// TODO Bullets löschen wenn außerhalb canvas
-// TODO offset von ctx.translate() berechnen
+// TODO Health
+// TODO AI
+// TODO Collision Detection
 export class Game
 {
     constructor()
     {
         this.canvas = $("#canvas")[0];
-        this.ctx = this.canvas.getContext("2d");
         this.canvas.width = window.innerWidth - 4;
         this.canvas.height = window.innerHeight - 4;
-        this.gun = new Gun(this.canvas);
-        this.mousePos = new Vector(0, 0);
-        this.mouseDirUnit = new Vector(0, 0);
-        this.isActive = true;
-        this.shootInterval = null;
+        this.ctx = this.canvas.getContext("2d");
+
+        this.gun = new Gun(this.ctx);
         this.map = new Map(5000, 5000);
 
-        $(this.canvas).mousemove($.proxy(this.handleMouse, this));
-        $(document).mousedown($.proxy(this.handleMouseDown, this));
-        $(document).mouseup($.proxy(this.handleMouseUp, this));
-        $(document).keydown($.proxy(this.handleKey, this));
+        this.mousePosCanvas = new Vector(0, 0);
+        this.mouseDirection = new Vector(0, 0);
+        this.isActive = true;
+        this.shootInterval = null;
+        this.bullets = [];
+
+        this.bindEvents();
     }
 
     start()
@@ -32,20 +32,28 @@ export class Game
         this.mainLoop();
     }
 
+    bindEvents()
+    {
+        $(this.canvas).mousemove($.proxy(this.handleMouse, this));
+        $(document).mousedown($.proxy(this.handleMouseDown, this));
+        $(document).mouseup($.proxy(this.handleMouseUp, this));
+        $(document).keydown($.proxy(this.handleKey, this));
+    }
+
     handleMouse(event)
     {
-        this.mousePos.x = event.pageX;
-        this.mousePos.y = event.pageY;
-        let canvasOffset = new Vector(-this.ctx.getTransform().e, -this.ctx.getTransform().f);
-        let mousePos = Vector.add(this.mousePos, canvasOffset);
-        this.mouseDirUnit = Vector.getUnit(this.gun.pivot, mousePos);
-        this.gun.rotation = -Math.atan2(this.mouseDirUnit.x, this.mouseDirUnit.y) - 0.5 * Math.PI;
+        this.mousePosCanvas.x = event.pageX;
+        this.mousePosCanvas.y = event.pageY;
+        let transformOffset = new Vector(-this.ctx.getTransform().e, -this.ctx.getTransform().f);
+        let mousePosWorld = Vector.add(this.mousePosCanvas, transformOffset);
+        this.mouseDirection = Vector.getUnit(this.gun.pivot, mousePosWorld);
+        this.gun.rotation = -Math.atan2(this.mouseDirection.x, this.mouseDirection.y) - 0.5 * Math.PI;
     }
 
     handleMouseDown(event)
     {
-        this.gun.shoot();
-        this.shootInterval = setInterval($.proxy(this.gun.shoot, this.gun), 200);
+        this.bullets.push(this.gun.shoot());
+        this.shootInterval = setInterval($.proxy(() => this.bullets.push(this.gun.shoot()), this.gun), 200);
     }
 
     handleMouseUp(event)
@@ -65,13 +73,29 @@ export class Game
     {
         window.requestAnimationFrame(() => this.mainLoop());
         if (!this.isActive) return;
-        let ctx = this.canvas.getContext("2d");
-        ctx.clearRect(0, 0, this.map.width, this.map.height);
-        let translateVector = Vector.invert(this.gun.velocity);
-        ctx.translate(translateVector.x, translateVector.y);
-        ctx.drawImage(this.map.image, 0, 0);
 
-        this.gun.direction = this.mouseDirUnit;
+        this.ctx.clearRect(0, 0, this.map.width, this.map.height);
+        let translateVector = Vector.invert(this.gun.velocity);
+        this.ctx.translate(translateVector.x, translateVector.y);
+        this.ctx.drawImage(this.map.image, 0, 0);
+
+        this.gun.direction = this.mouseDirection;
         this.gun.update();
+
+        for (let i = 0; i < this.bullets.length; i++)
+        {
+            let bullet = this.bullets[i];
+            if (bullet.position.x < 0 ||
+                bullet.position.x > this.map.width ||
+                bullet.position.y < 0 ||
+                bullet.position.y > this.map.height)
+            {
+                this.bullets.splice(i, 1);
+            }
+            else
+            {
+                bullet.update();
+            }
+        }
     }
 }
