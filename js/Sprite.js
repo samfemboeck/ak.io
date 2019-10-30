@@ -28,6 +28,7 @@ export class Sprite
     update()
     {
         this.move();
+        this.rotate();
         this.draw();
     }
 
@@ -45,5 +46,11 @@ export class Sprite
         this.ctx.fillStyle = '#000';
         this.ctx.fillRect(-0.5 * this.width, -0.5 * this.height, this.width, this.height);
         this.ctx.restore();
+    }
+
+    rotate(direction)
+    {
+        let dir = direction ? direction : this.direction;
+        this.rotation = -Math.atan2(dir.x, dir.y) - 0.5 * Math.PI;
     }
 }

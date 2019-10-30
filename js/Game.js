@@ -1,10 +1,12 @@
 import {Gun} from "./Gun.js";
 import {Vector} from "./Vector.js";
 import {Map} from "./Map.js";
+import {AI} from "./AI.js";
 
 // TODO Health
 // TODO AI
 // TODO Collision Detection
+// TODO Bei Gun Collision beide tot
 export class Game
 {
     constructor()
@@ -13,14 +15,9 @@ export class Game
         this.canvas.width = window.innerWidth - 4;
         this.canvas.height = window.innerHeight - 4;
         this.ctx = this.canvas.getContext("2d");
-
-        this.gun = new Gun(this.ctx);
-        this.map = new Map(5000, 5000);
-
         this.mousePosCanvas = new Vector(0, 0);
         this.mouseDirection = new Vector(0, 0);
         this.isActive = true;
-        this.shootInterval = null;
         this.bullets = [];
 
         this.bindEvents();
@@ -28,7 +25,14 @@ export class Game
 
     start()
     {
+        this.map = new Map(5000, 5000);
         this.map.generate();
+
+        this.player = new Gun(this.ctx, this.bullets);
+        this.opponent = new AI(this.ctx, this.bullets);
+        this.opponent.position = Vector.add(this.player.position, new Vector(-0.25 * this.canvas.width, -0.25 * this.canvas.height));
+        this.opponent.setTarget(this.player);
+
         this.mainLoop();
     }
 
@@ -46,19 +50,18 @@ export class Game
         this.mousePosCanvas.y = event.pageY;
         let transformOffset = new Vector(-this.ctx.getTransform().e, -this.ctx.getTransform().f);
         let mousePosWorld = Vector.add(this.mousePosCanvas, transformOffset);
-        this.mouseDirection = Vector.getUnit(this.gun.pivot, mousePosWorld);
-        this.gun.rotation = -Math.atan2(this.mouseDirection.x, this.mouseDirection.y) - 0.5 * Math.PI;
+        this.mouseDirection = Vector.getUnit(this.player.pivot, mousePosWorld);
+        this.player.direction = this.mouseDirection;
     }
 
     handleMouseDown(event)
     {
-        this.bullets.push(this.gun.shoot());
-        this.shootInterval = setInterval($.proxy(() => this.bullets.push(this.gun.shoot()), this.gun), 200);
+        this.player.setShooting(this.bullets);
     }
 
     handleMouseUp(event)
     {
-        clearInterval(this.shootInterval);
+        this.player.unsetShooting();
     }
 
     handleKey(event)
@@ -75,12 +78,14 @@ export class Game
         if (!this.isActive) return;
 
         this.ctx.clearRect(0, 0, this.map.width, this.map.height);
-        let translateVector = Vector.invert(this.gun.velocity);
+        let translateVector = Vector.invert(this.player.velocity);
         this.ctx.translate(translateVector.x, translateVector.y);
         this.ctx.drawImage(this.map.image, 0, 0);
 
-        this.gun.direction = this.mouseDirection;
-        this.gun.update();
+        this.player.direction = this.mouseDirection;
+        this.player.update();
+
+        this.opponent.update();
 
         for (let i = 0; i < this.bullets.length; i++)
         {
