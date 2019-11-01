@@ -19,12 +19,12 @@ export class Sprite
 
     get leftTop()
     {
-       return null // TODO
+       return null // TODO implement
     }
 
     get rightBottom()
     {
-        return null // TODO
+        return null // TODO implement
     }
 
     get velocity()
