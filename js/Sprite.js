@@ -1,10 +1,14 @@
 import {Vector} from "./Vector.js";
+import {EntityHandler} from "./EntityHandler.js";
 
 export class Sprite
 {
-    constructor(ctx)
+    constructor(game)
     {
-        this.ctx = ctx;
+        this.TAG = EntityHandler.TAGS.NONE;
+
+        this.game = game;
+        this.ctx = game.ctx;
         this.speed = 0;
         this.width = 0;
         this.height = 0;
@@ -13,11 +17,14 @@ export class Sprite
         this.position = new Vector(0, 0);
     }
 
-    get pivot()
+    get leftTop()
     {
-        let x = this.position.x + 0.5 * this.width;
-        let y = this.position.y - 0.5 * this.height;
-        return new Vector(x, y);
+       return null // TODO
+    }
+
+    get rightBottom()
+    {
+        return null // TODO
     }
 
     get velocity()
@@ -28,7 +35,6 @@ export class Sprite
     update()
     {
         this.move();
-        this.rotate();
         this.draw();
     }
 
@@ -41,7 +47,7 @@ export class Sprite
     draw()
     {
         this.ctx.save();
-        this.ctx.translate(this.pivot.x, this.pivot.y);
+        this.ctx.translate(this.position.x, this.position.y);
         this.ctx.rotate(this.rotation);
         this.ctx.fillStyle = '#000';
         this.ctx.fillRect(-0.5 * this.width, -0.5 * this.height, this.width, this.height);
@@ -51,6 +57,24 @@ export class Sprite
     rotate(direction)
     {
         let dir = direction ? direction : this.direction;
-        this.rotation = -Math.atan2(dir.x, dir.y) - 0.5 * Math.PI;
+        this.rotation = -Math.atan2(dir.x, dir.y);
+    }
+
+    onCollide(other)
+    {
+        // implement in child class
+    }
+
+    overlaps(other)
+    {
+        debugger;
+
+        if (this.leftTop.x > other.rightBottom.x || other.leftTop.x > this.rightBottom.x)
+            return false;
+
+        if (this.leftTop.y < other.rightBottom.y || other.leftTop.y < this.rightBottom.y)
+            return false;
+
+        return true;
     }
 }

@@ -31,6 +31,11 @@ export class Vector
         return new Vector(vector.x * factor, vector.y * factor);
     }
 
+    static equals(v1, v2)
+    {
+        return v1.x === v2.x && v1.y === v2.y
+    }
+
     get magnitude()
     {
         return Math.sqrt(this.x * this.x + this.y * this.y);
@@ -42,5 +47,10 @@ export class Vector
         this.x /= mag;
         this.y /= mag;
         return this;
+    }
+
+    toString()
+    {
+        return "{x: " + this.x + ", y: " + this.y + "}";
     }
 }
