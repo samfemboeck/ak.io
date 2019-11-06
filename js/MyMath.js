@@ -1,20 +1,13 @@
 import {Vector} from "./Vector.js";
 
-// TODO Node.js installieren
-
-class MyMath
+export class MyMath
 {
-    /*
-   y' = y*cos(a) - x*sin(a)
-   x' = y*sin(a) + x*cos(a)
-   */
-    static getPositionForRotation(pos, radians)
-    {
-        let v = new Vector(pos.x, pos.y);
-        v.y = v.y * Math.cos(radians) - v.x * Math.sin(radians);
-        v.x = v.y * Math.sin(radians) - v.x * Math.cos(radians);
-    }
+        static getRotatedPosition(pos, radians, pivot)
+        {
+            let v = new Vector(0, 0);
+            v.x = (pos.x - pivot.x) * Math.cos(radians) - (pos.y - pivot.y) * Math.sin(radians) + pivot.x;
+            v.y = (pos.x - pivot.x) * Math.sin(radians) + (pos.y - pivot.y) * Math.cos(radians) + pivot.y;
+            return v.approximateEpsilon();
+        }
 }
 
-let pos = new Vector(0, 1);
-console.log(Vector.equals(MyMath.getPositionForRotation(pos, 0.5 * Math.PI), new Vector(1, 0)));

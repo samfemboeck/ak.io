@@ -36,7 +36,8 @@ export class Gun extends Sprite
 
     shootBullet()
     {
-        let bullet = new Bullet(this, {...this.game.mouseDirection}, this.speed * 5, {...this.rotation}, {...this.position});
+        let bullet = new Bullet(this, {...this.game.mouseDirection}, this.speed * 5, this.rotation, {...this.position});
         this.game.entityHandler.add(bullet);
+        debugger;
     }
 }

@@ -1,5 +1,6 @@
 import {Vector} from "./Vector.js";
 import {EntityHandler} from "./EntityHandler.js";
+import {MyMath} from "./MyMath.js";
 
 export class Sprite
 {
@@ -12,19 +13,21 @@ export class Sprite
         this.speed = 0;
         this.width = 0;
         this.height = 0;
-        this.rotation = Math.PI;
+        this.rotation = 0;
         this.direction = new Vector(0, 0);
         this.position = new Vector(0, 0);
     }
 
     get leftTop()
     {
-       return null // TODO implement
+        let leftTop = new Vector(this.position.x - 0.5 * this.width, this.position.y - 0.5 * this.height);
+        return MyMath.getRotatedPosition(leftTop, this.rotation, this.position);
     }
 
     get rightBottom()
     {
-        return null // TODO implement
+        let rightBottom = new Vector(this.position.x + 0.5 * this.width, this.position.y + 0.5 * this.height);
+        return MyMath.getRotatedPosition(rightBottom, this.rotation, this.position);
     }
 
     get velocity()
@@ -57,7 +60,7 @@ export class Sprite
     rotate(direction)
     {
         let dir = direction ? direction : this.direction;
-        this.rotation = -Math.atan2(dir.x, dir.y);
+        this.rotation = -Math.atan2(dir.x, dir.y) - Math.PI;
     }
 
     onCollide(other)
@@ -68,7 +71,6 @@ export class Sprite
     overlaps(other)
     {
         debugger;
-
         if (this.leftTop.x > other.rightBottom.x || other.leftTop.x > this.rightBottom.x)
             return false;
 

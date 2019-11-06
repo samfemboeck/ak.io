@@ -15,6 +15,7 @@ export class Bullet extends Sprite
         this.position = position;
         this.width = 5;
         this.height = 5;
+        console.log(this.rotation)
     }
 
     update()

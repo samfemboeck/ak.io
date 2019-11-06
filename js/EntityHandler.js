@@ -35,19 +35,18 @@ export class EntityHandler
             entity.update();
         }
 
-        //this.checkCollisions();
+        this.checkCollisions();
     }
 
     checkCollisions()
     {
         for (let i = 0; i < this.entities.length; i++)
         {
-            if (this.entities[i].TAG === EntityHandler.TAGS.NONE)
-                continue;
-
             for (let a = i + 1; a < this.entities.length; a++)
             {
-                if (this.entities[a].TAG === EntityHandler.TAGS.NONE)
+                if (this.entities[a].TAG === EntityHandler.TAGS.NONE ||
+                    this.entities[i].TAG === EntityHandler.TAGS.NONE ||
+                    this.entities[a] === this.entities[i])
                     continue;
 
                 if (this.entities[i].overlaps(this.entities[a]))

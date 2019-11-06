@@ -2,6 +2,7 @@ import {Player} from "./Player.js";
 import {Vector} from "./Vector.js";
 import {Map} from "./Map.js";
 import {EntityHandler} from "./EntityHandler.js";
+import {MyMath} from "./MyMath.js";
 
 // TODO Collision Detection
 // TODO Health
@@ -35,6 +36,9 @@ export class Game
         this.opponent.setTarget(this.player);
         this.entityHandler.add(this.opponent);*/
 
+        let pos = new Vector(0, 1);
+        console.log(MyMath.getRotatedPosition(pos, 0.5 * Math.PI, new Vector(0, 0)));
+
         this.mainLoop();
     }
 
@@ -52,8 +56,8 @@ export class Game
         this.mousePosCanvas.x = event.pageX;
         this.mousePosCanvas.y = event.pageY;
         let transformOffset = new Vector(-this.ctx.getTransform().e, -this.ctx.getTransform().f);
-        let mousePosWorld = Vector.add(this.mousePosCanvas, transformOffset);
-        this.mouseDirection = Vector.getUnit(this.player.position, mousePosWorld);
+        this.mousePosWorld = Vector.add(this.mousePosCanvas, transformOffset);
+        this.mouseDirection = Vector.getUnit(this.player.position, this.mousePosWorld);
         this.player.rotate(this.mouseDirection);
     }
 
@@ -77,8 +81,7 @@ export class Game
 
         if (key === "l")
         {
-            console.log("LT: " + this.player.leftTop);
-            console.log("RB: " + this.player.rightBottom);
+            this.entityHandler.checkCollisions();
         }
 
         this.player.handleKeyDown(event.originalEvent.key)

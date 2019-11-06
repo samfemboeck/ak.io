@@ -49,6 +49,23 @@ export class Vector
         return this;
     }
 
+    approximateEpsilon()
+    {
+        let epsilon = 1e-15;
+
+        if (Math.abs(0 - this.x) <= epsilon)
+        {
+            this.x = 0;
+        }
+
+        if (Math.abs(0 - this.y) <= epsilon)
+        {
+            this.y = 0;
+        }
+
+        return this;
+    }
+
     toString()
     {
         return "{x: " + this.x + ", y: " + this.y + "}";
