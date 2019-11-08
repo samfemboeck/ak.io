@@ -6,14 +6,14 @@ export class Vector
         this.y = y;
     }
 
-    static getUnit(pos1, pos2)
-    {
-        return Vector.substract(pos2, pos1).normalize();
-    }
-
     static substract(v1, v2)
     {
         return new Vector(v1.x - v2.x, v1.y - v2.y);
+    }
+
+    static dotProduct(v1, v2)
+    {
+        return v1.x * v2.x + v1.y * v2.y;
     }
 
     static add(v1, v2)
@@ -39,6 +39,21 @@ export class Vector
     get magnitude()
     {
         return Math.sqrt(this.x * this.x + this.y * this.y);
+    }
+
+    get normalLeft()
+    {
+        return new Vector(-this.y, this.x);
+    }
+
+    get unitVector()
+    {
+        return new Vector(this.x / this.magnitude, this.y / this.magnitude);
+    }
+
+    get invertedVector()
+    {
+        return new Vector(-this.x, -this.y);
     }
 
     normalize()

@@ -1,15 +1,12 @@
 import {Sprite} from "./Sprite.js";
 import {Bullet} from "./Bullet.js";
 import {Vector} from "./Vector.js";
-import {EntityHandler} from "./EntityHandler.js";
 
 export class Gun extends Sprite
 {
     constructor(game)
     {
         super(game);
-
-        this.TAG = EntityHandler.TAGS.PLAYER;
 
         this.width = 20;
         this.height = 100;
@@ -36,8 +33,8 @@ export class Gun extends Sprite
 
     shootBullet()
     {
-        let bullet = new Bullet(this, {...this.game.mouseDirection}, this.speed * 5, this.rotation, {...this.position});
+        let bullet = new Bullet(this.game, {...this.direction}, this.speed * 5, this.rotation, {...this.position});
+        bullet.LAYER = this.LAYER; // dont let bullet collide with this object;
         this.game.entityHandler.add(bullet);
-        debugger;
     }
 }

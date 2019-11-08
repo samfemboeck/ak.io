@@ -15,7 +15,6 @@ export class Bullet extends Sprite
         this.position = position;
         this.width = 5;
         this.height = 5;
-        console.log(this.rotation)
     }
 
     update()
@@ -25,6 +24,6 @@ export class Bullet extends Sprite
 
     onCollide(other)
     {
-        console.log("BULLET COLLISION");
+
     }
 }

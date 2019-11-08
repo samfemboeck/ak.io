@@ -1,3 +1,5 @@
+import {Vector} from "./Vector.js";
+
 export class EntityHandler
 {
     constructor(game)
@@ -30,9 +32,19 @@ export class EntityHandler
 
     updateEntities()
     {
-        for (let entity of this.entities)
+        for (let i = 0; i < this.entities.length; i++)
         {
+            let entity = this.entities[i];
             entity.update();
+
+            if (entity.position.x < 0 ||
+                entity.position.x > this.game.map.width ||
+                entity.position.y < 0 ||
+                entity.position.y > this.game.map.height)
+            {
+                this.entities.splice(i, 1);
+                console.log("deleted")
+            }
         }
 
         this.checkCollisions();
@@ -40,42 +52,71 @@ export class EntityHandler
 
     checkCollisions()
     {
-        for (let i = 0; i < this.entities.length; i++)
+        for (let a = 0; a < this.entities.length; a++)
         {
-            for (let a = i + 1; a < this.entities.length; a++)
+            for (let b = a + 1; b < this.entities.length; b++)
             {
                 if (this.entities[a].TAG === EntityHandler.TAGS.NONE ||
-                    this.entities[i].TAG === EntityHandler.TAGS.NONE ||
-                    this.entities[a] === this.entities[i])
+                    this.entities[b].TAG === EntityHandler.TAGS.NONE ||
+                    this.entities[a].LAYER === this.entities[b].LAYER)
                     continue;
 
-                if (this.entities[i].overlaps(this.entities[a]))
+                let normalsA = this.getLeftNormals(this.entities[a].vertices);
+                let normalsB = this.getLeftNormals(this.entities[b].vertices);
+
+                let collisionA = this.checkProjectionsForCollision(this.entities[a].vertices, this.entities[b].vertices, normalsA);
+                let collisionB = this.checkProjectionsForCollision(this.entities[a].vertices, this.entities[b].vertices, normalsB);
+
+                if (collisionA && collisionB)
                 {
-                    console.log("overlap");
-                    this.entities[i].onCollide(this.entities[a]);
-                    this.entities[a].onCollide(this.entities[i]);
+                    this.entities[a].onCollide(this.entities[b]);
+                    this.entities[b].onCollide(this.entities[a]);
                 }
             }
         }
     }
 
-    /*
-    * for (let i = 0; i < this.bullets.length; i++)
+    checkProjectionsForCollision(verticesA, verticesB, axisList)
+    {
+        for (let i = 0; i < axisList.length; i++)
         {
-            let bullet = this.bullets[i];
-            if (bullet.position.x < 0 ||
-                bullet.position.x > this.map.width ||
-                bullet.position.y < 0 ||
-                bullet.position.y > this.map.height)
-            {
-                this.bullets.splice(i, 1);
-            }
-            else
-            {
-                bullet.update();
-            }
+            let projectionA = this.getMinMaxProjection(verticesA, axisList[i]);
+            let projectionB = this.getMinMaxProjection(verticesB, axisList[i]);
+            let isSeparate = projectionA.min > projectionB.max || projectionB.min > projectionA.max;
+            if (isSeparate)
+                return false;
         }
-    * */
+        return true;
+    }
+
+    getLeftNormals(vertices)
+    {
+        let normals = [];
+        for (let i = 0; i < vertices.length - 1; i++)
+        {
+            normals.push(Vector.substract(vertices[i + 1], vertices[i]).normalLeft.unitVector);
+        }
+        normals.push(Vector.substract(vertices[0], vertices[vertices.length - 1]).normalLeft.unitVector);
+        return normals;
+    }
+
+    getMinMaxProjection(vertices, axis)
+    {
+        let min, max;
+        min = max = Vector.dotProduct(vertices[0], axis);
+
+        for (let i = 1; i < vertices.length - 1; i++)
+        {
+            let projection = Vector.dotProduct(vertices[i], axis);
+            if (projection > max)
+                max = projection;
+            else if (projection < min)
+                min = projection;
+        }
+
+        return {min, max};
+    }
 }
 
 EntityHandler.TAGS = {NONE: 0, PLAYER: 1, OPPONENT: 2, BULLET: 3};
+EntityHandler.LAYERS = {PLAYER: 0, OPPONENT: 1};

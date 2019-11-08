@@ -2,7 +2,7 @@ import {Player} from "./Player.js";
 import {Vector} from "./Vector.js";
 import {Map} from "./Map.js";
 import {EntityHandler} from "./EntityHandler.js";
-import {MyMath} from "./MyMath.js";
+import {AI} from "./AI.js";
 
 // TODO Collision Detection
 // TODO Health
@@ -31,13 +31,10 @@ export class Game
         this.player = new Player(this);
         this.entityHandler.add(this.player);
 
-        /*this.opponent = new AI(this);
+        this.opponent = new AI(this);
         this.opponent.position = Vector.add(this.player.position, new Vector(-0.25 * this.canvas.width, -0.25 * this.canvas.height));
         this.opponent.setTarget(this.player);
-        this.entityHandler.add(this.opponent);*/
-
-        let pos = new Vector(0, 1);
-        console.log(MyMath.getRotatedPosition(pos, 0.5 * Math.PI, new Vector(0, 0)));
+        this.entityHandler.add(this.opponent);
 
         this.mainLoop();
     }
@@ -57,16 +54,16 @@ export class Game
         this.mousePosCanvas.y = event.pageY;
         let transformOffset = new Vector(-this.ctx.getTransform().e, -this.ctx.getTransform().f);
         this.mousePosWorld = Vector.add(this.mousePosCanvas, transformOffset);
-        this.mouseDirection = Vector.getUnit(this.player.position, this.mousePosWorld);
+        this.mouseDirection = Vector.substract(this.mousePosWorld, this.player.position).unitVector;
         this.player.rotate(this.mouseDirection);
     }
 
-    handleMouseDown(event)
+    handleMouseDown()
     {
         this.player.setShooting();
     }
 
-    handleMouseUp(event)
+    handleMouseUp()
     {
         this.player.unsetShooting();
     }
@@ -98,7 +95,7 @@ export class Game
         if (!this.isActive) return;
 
         this.ctx.clearRect(0, 0, this.map.width, this.map.height);
-        let translateVector = Vector.invert(this.player.velocity);
+        let translateVector = this.player.velocity.invertedVector;
         this.ctx.translate(translateVector.x, translateVector.y);
         this.ctx.drawImage(this.map.image, 0, 0);
 

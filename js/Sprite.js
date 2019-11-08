@@ -18,16 +18,23 @@ export class Sprite
         this.position = new Vector(0, 0);
     }
 
-    get leftTop()
+    get vertices()
     {
-        let leftTop = new Vector(this.position.x - 0.5 * this.width, this.position.y - 0.5 * this.height);
-        return MyMath.getRotatedPosition(leftTop, this.rotation, this.position);
-    }
+        let vertices = [];
 
-    get rightBottom()
-    {
+        let leftTop = new Vector(this.position.x - 0.5 * this.width, this.position.y - 0.5 * this.height);
+        vertices.push(MyMath.getRotatedPosition(leftTop, this.rotation, this.position));
+
+        let rightTop = new Vector(this.position.x + 0.5 * this.width, this.position.y - 0.5 * this.height);
+        vertices.push(MyMath.getRotatedPosition(rightTop, this.rotation, this.position));
+
         let rightBottom = new Vector(this.position.x + 0.5 * this.width, this.position.y + 0.5 * this.height);
-        return MyMath.getRotatedPosition(rightBottom, this.rotation, this.position);
+        vertices.push(MyMath.getRotatedPosition(rightBottom, this.rotation, this.position));
+
+        let leftBottom = new Vector(this.position.x - 0.5 * this.width, this.position.y + 0.5 * this.height);
+        vertices.push(MyMath.getRotatedPosition(leftBottom, this.rotation, this.position));
+
+        return vertices;
     }
 
     get velocity()
@@ -66,17 +73,5 @@ export class Sprite
     onCollide(other)
     {
         // implement in child class
-    }
-
-    overlaps(other)
-    {
-        debugger;
-        if (this.leftTop.x > other.rightBottom.x || other.leftTop.x > this.rightBottom.x)
-            return false;
-
-        if (this.leftTop.y < other.rightBottom.y || other.leftTop.y < this.rightBottom.y)
-            return false;
-
-        return true;
     }
 }

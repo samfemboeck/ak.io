@@ -9,6 +9,7 @@ export class AI extends Gun
         super(game);
 
         this.TAG = EntityHandler.TAGS.OPPONENT;
+        this.LAYER = EntityHandler.LAYERS.OPPONENT;
 
         this.attackTime = 60; // 1 second
         this.target = null;
@@ -51,8 +52,13 @@ export class AI extends Gun
 
             this.direction = Vector.substract(this.target.pivot, this.pivot).normalize();
         }*/
-        this.direction = Vector.substract(this.target.position, this.position).normalize();
+        this.direction = Vector.substract(this.target.position, this.position).unitVector;
         this.rotate();
         super.update();
+    }
+
+    shootBullet()
+    {
+        super.shootBullet();
     }
 }
