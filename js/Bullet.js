@@ -1,20 +1,23 @@
 import {Sprite} from "./Sprite.js";
-import {EntityHandler} from "./EntityHandler.js";
+import {CollisionHandler} from "./CollisionHandler.js";
 
+// TODO
 export class Bullet extends Sprite
 {
-    constructor(game, direction, speed, rotation, position)
+    constructor(entityHandler, direction, speed, rotation, position)
     {
-        super(game);
+        super(entityHandler);
 
-        this.LAYERS = [EntityHandler.LAYERS.BULLET];
+        this.LAYERS = [CollisionHandler.LAYERS.BULLET];
 
         this.speed = speed;
         this.direction = direction;
         this.rotation = rotation;
         this.position = position;
-        this.width = 10;
-        this.height = 1;
+        this.width = 5;
+        this.height = 0.5;
+        this.damage = 5;
+        this.polygon = [[-4, 0], [-3,1], [3,1], [3,-1], [-3,-1]];
     }
 
     update()
@@ -22,8 +25,14 @@ export class Bullet extends Sprite
         super.update();
     }
 
+    draw(ctx)
+    {
+        super.draw(ctx);
+        ctx.fill();
+    }
+
     onCollide(other)
     {
-        this.game.entityHandler.remove(this);
+        this.entityHandler.remove(this);
     }
 }

@@ -5,16 +5,14 @@ import {MyMath} from "./MyMath.js";
 
 export class Gun extends Sprite
 {
-    constructor(game)
+    constructor(entityHandler)
     {
-        super(game);
+        super(entityHandler);
 
-        this.width = 20;
-        this.height = 100;
-        this.position = new Vector(this.ctx.canvas.width / 2 - 0.5 * this.width, this.ctx.canvas.height / 2 - 0.5 * this.height);
         this.speed = 3;
         this.fireRate = 200; // every 200 msecs
-        this.scale = 2;
+        this.health = 100;
+        this.scale = 4;
         this.polygon = [[-2,8], [8,8], [11,5],[18,3], [20,4], [27,2], [24,-7], [12,0], [10,0], [10, -1], [12, -6], [10, -8], [8,-8], [8, -6], [6, -1], [2,2], [-8, -10], [-10, -8],
             [-2, 2], [-4,2], [-4,2], [-14,3], [-14,4], [-20,4], [-20,3], [-23,3], [-23,4], [-28,4], [-28,5], [-23,5], [-21,6], [-21,7], [-14,7], [-14,8], [-7, 8], [-7,9]];
 
@@ -37,46 +35,43 @@ export class Gun extends Sprite
 
     shootBullet()
     {
-        let barrelPosition = this.vertices[27];
-        let bullet = new Bullet(this.game, {...this.direction}, this.speed * 5, this.rotation, {...barrelPosition});
-        bullet.TAG = this.TAG; // dont let bullet collide with this object;
+        let barrelPosition = new Vector(this.polygon);
+        let bullet = new Bullet(this.entityHandler, {...this.direction}, this.speed * 5, this.rotation, {...barrelPosition});
+        bullet.TAG = this.TAG;
+        bullet.scale = this.scale;
+        return bullet;
     }
 
-    get vertices()
+    update()
     {
-        let ret = [];
-
-        for (let i in this.polygon)
-        {
-            let x = this.scale * this.polygon[i][0];
-            let y = this.scale * this.polygon[i][1];
-            let pos = new Vector(this.position.x + x, this.position.y + y);
-            ret.push(MyMath.getRotatedPosition(pos, this.rotation, this.position));
-        }
-
-        return ret;
+        super.update();
+        this.rotation = MyMath.getRotationForDirection(this.direction) - 0.5 * Math.PI; // standard rotation is off
     }
 
-    draw()
+    draw(ctx)
     {
-        this.ctx.save();
-        this.ctx.translate(this.position.x, this.position.y);
-        this.ctx.rotate(this.rotation);
-        this.ctx.fillStyle = '#000';
+        ctx.fillStyle = '#000';
+        super.draw(ctx);
+        ctx.fill();
 
-        // Collision vertices
-        this.ctx.beginPath();
-        this.ctx.moveTo(this.scale * this.polygon[0][0], this.scale * this.polygon[0][1]);
+        // Health Bar
+        ctx.beginPath();
+        ctx.strokeStyle = "rgba(0,255,0, 0.3)";
+        ctx.lineWidth = 10;
+        ctx.arc(0, 0, 15, 0, this.health * (Math.PI / 50));
+        ctx.stroke();
+    }
 
-        for (let i = 1; i < this.polygon.length; i++)
+    onCollide(other)
+    {
+        if (other instanceof Bullet)
         {
-            this.ctx.lineTo(this.scale * this.polygon[i][0], this.scale * this.polygon[i][1])
+            this.health -= other.damage;
+            if (this.health <= 0)
+            {
+                this.entityHandler.onKill(other.TAG);
+                this.health = 100;
+            }
         }
-
-        this.ctx.lineTo(this.scale * this.polygon[0][0], this.scale * this.polygon[0][1]);
-        this.ctx.closePath();
-        this.ctx.fill();
-
-        this.ctx.restore();
     }
 }

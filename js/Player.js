@@ -1,24 +1,29 @@
 import {Gun} from "./Gun.js";
 import {Vector} from "./Vector.js";
-import {EntityHandler} from "./EntityHandler.js";
-import {Bullet} from "./Bullet.js";
+import {CollisionHandler} from "./CollisionHandler.js";
+import {MyMath} from "./MyMath.js";
 
 /**
  * Handles Player Input
  */
 export class Player extends Gun
 {
-    constructor(game)
+    constructor(entityHandler)
     {
-        super(game);
+        super(entityHandler);
 
-        this.TAG = EntityHandler.TAGS.PLAYER;
-        this.LAYER = EntityHandler.LAYERS.PLAYER;
+        this.LAYERS = [CollisionHandler.LAYERS.PLAYER];
 
+        this._mouseDirection = new Vector(0, 0);
         this._moveRight = false;
         this._moveLeft = false;
         this._moveUp = false;
         this._moveDown = false;
+    }
+
+    set mouseDirection(dir)
+    {
+        this._mouseDirection = dir;
     }
 
     handleKeyDown(key)
@@ -51,17 +56,13 @@ export class Player extends Gun
         let moveX = this._moveRight - this._moveLeft;
         let moveY = this._moveDown - this._moveUp;
         this.direction = new Vector(moveX, moveY);
-    }
-
-    onCollide(other)
-    {
-        console.log("collision");
+        this.rotation = MyMath.getRotationForDirection(this._mouseDirection) - 0.5 * Math.PI;
     }
 
     shootBullet()
     {
-        let barrelPosition = this.vertices[27];
-        let bullet = new Bullet(this.game, {...this.game.mouseDirection}, this.speed * 5, this.rotation, {...barrelPosition});
-        bullet.LAYER = this.LAYER; // dont let bullet collide with this object;
+        let bullet = super.shootBullet();
+        bullet.direction = this._mouseDirection;
+        bullet.LAYERS.push(CollisionHandler.LAYERS.PLAYER);
     }
 }

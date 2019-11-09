@@ -27,14 +27,12 @@ export class Game
 
     start()
     {
-        this.map = new Map(5000, 5000);
-        this.map.generate();
+        this.map = new Map(this.entityHandler,5000, 5000);
 
-        this.player = new Player(this);
+        this.player = new Player(this.entityHandler, this.mouseDirection);
+        this.player.position = new Vector(this.ctx.canvas.width / 2 - 0.5 * this.player.width, this.ctx.canvas.height / 2 - 0.5 * this.player.height);
 
-        this.opponent = new AI(this, this.player);
-        this.opponent.position = Vector.add(this.player.position, new Vector(-0.25 * this.canvas.width, -0.25 * this.canvas.height));
-        this.opponent.setTarget(this.player);
+        this.opponent = new AI(this.entityHandler, this.player);
 
         this.mainLoop();
     }
@@ -55,7 +53,7 @@ export class Game
         let transformOffset = new Vector(-this.ctx.getTransform().e, -this.ctx.getTransform().f);
         this.mousePosWorld = Vector.add(this.mousePosCanvas, transformOffset);
         this.mouseDirection = Vector.substract(this.mousePosWorld, this.player.position).unitVector;
-        this.player.rotate(this.mouseDirection);
+        this.player.mouseDirection = this.mouseDirection;
     }
 
     handleMouseDown()
@@ -79,7 +77,7 @@ export class Game
         if (key === "l")
         {
             // log something
-            console.log(this.player.rotation)
+            console.log(this.entityHandler.entities)
         }
 
         this.player.handleKeyDown(event.originalEvent.key)
@@ -95,10 +93,8 @@ export class Game
         window.requestAnimationFrame(() => this.mainLoop());
         if (!this.isActive) return;
 
-        this.ctx.clearRect(0, 0, this.map.width, this.map.height);
         let translateVector = this.player.velocity.invertedVector; // "Camera follow"
         this.ctx.translate(translateVector.x, translateVector.y);
-        this.ctx.drawImage(this.map.image, 0, 0);
 
         this.entityHandler.updateEntities();
     }

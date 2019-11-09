@@ -1,16 +1,23 @@
-export class Map
+import {Sprite} from "./Sprite.js";
+import {CollisionHandler} from "./CollisionHandler.js";
+
+export class Map extends Sprite
 {
-    constructor(width, height)
+    constructor(entityHandler, width, height)
     {
+        super(entityHandler);
+
+        this.LAYERS = [CollisionHandler.LAYERS.NON_COLLIDABLE];
+
         this.width = width;
         this.height = height;
         this.gridSize = 100;
-        this.image = null; // generate on-the-fly
+        this.image = this.generate();
     }
 
     generate()
     {
-        var ctx = document.createElement("canvas").getContext("2d");
+        let ctx = document.createElement("canvas").getContext("2d");
         ctx.canvas.width = this.width;
         ctx.canvas.height = this.height;
 
@@ -27,7 +34,13 @@ export class Map
         }
 
         // store the generate map as this image texture
-        this.image = new Image();
-        this.image.src = ctx.canvas.toDataURL("image/png");
+        let image = new Image();
+        image.src = ctx.canvas.toDataURL("image/png");
+        return image;
+    }
+
+    draw(ctx)
+    {
+        ctx.drawImage(this.image, 0, 0);
     }
 }

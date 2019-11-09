@@ -9,5 +9,10 @@ export class MyMath
             v.y = (pos.x - pivot.x) * Math.sin(radians) + (pos.y - pivot.y) * Math.cos(radians) + pivot.y;
             return v.approximateEpsilon();
         }
+
+        static getRotationForDirection(vector)
+        {
+            return -Math.atan2(vector.x, vector.y);
+        }
 }
 
