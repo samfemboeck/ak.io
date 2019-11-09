@@ -1,3 +1,6 @@
+/**
+ * Helper Class for Common Vector problems
+ */
 export class Vector
 {
     constructor(x, y)

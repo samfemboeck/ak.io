@@ -7,14 +7,14 @@ export class Bullet extends Sprite
     {
         super(game);
 
-        this.TAG = EntityHandler.TAGS.BULLET;
+        this.LAYERS = [EntityHandler.LAYERS.BULLET];
 
         this.speed = speed;
         this.direction = direction;
         this.rotation = rotation;
         this.position = position;
-        this.width = 5;
-        this.height = 5;
+        this.width = 10;
+        this.height = 1;
     }
 
     update()
@@ -24,6 +24,6 @@ export class Bullet extends Sprite
 
     onCollide(other)
     {
-
+        this.game.entityHandler.remove(this);
     }
 }

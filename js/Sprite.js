@@ -2,11 +2,15 @@ import {Vector} from "./Vector.js";
 import {EntityHandler} from "./EntityHandler.js";
 import {MyMath} from "./MyMath.js";
 
+/**
+ * implements basic behaviour for a Rectangle Sprite
+ */
 export class Sprite
 {
     constructor(game)
     {
         this.TAG = EntityHandler.TAGS.NONE;
+        this.LAYERS = [];
 
         this.game = game;
         this.ctx = game.ctx;
@@ -16,6 +20,8 @@ export class Sprite
         this.rotation = 0;
         this.direction = new Vector(0, 0);
         this.position = new Vector(0, 0);
+
+        game.entityHandler.add(this);
     }
 
     get vertices()
@@ -67,7 +73,7 @@ export class Sprite
     rotate(direction)
     {
         let dir = direction ? direction : this.direction;
-        this.rotation = -Math.atan2(dir.x, dir.y) - Math.PI;
+        this.rotation = -Math.atan2(dir.x, dir.y) - 0.5 * Math.PI;
     }
 
     onCollide(other)

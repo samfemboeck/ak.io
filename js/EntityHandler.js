@@ -1,5 +1,8 @@
 import {Vector} from "./Vector.js";
 
+/**
+ * Subject Class for handling updates and collisions
+ */
 export class EntityHandler
 {
     constructor(game)
@@ -10,12 +13,6 @@ export class EntityHandler
 
     add(entity)
     {
-        if (!entity.TAG || entity.TAG === EntityHandler.TAGS.NONE)
-        {
-            console.error("Cant add entity with invalid tag.");
-            return;
-        }
-
         this.entities.push(entity);
     }
 
@@ -27,6 +24,15 @@ export class EntityHandler
             {
                 this.entities.splice(i, 1);
             }
+        }
+    }
+
+    findEntityByTag(tag)
+    {
+        for (let entity in this.entities)
+        {
+            if (entity.TAG === tag)
+                return entity;
         }
     }
 
@@ -43,7 +49,6 @@ export class EntityHandler
                 entity.position.y > this.game.map.height)
             {
                 this.entities.splice(i, 1);
-                console.log("deleted")
             }
         }
 
@@ -56,24 +61,38 @@ export class EntityHandler
         {
             for (let b = a + 1; b < this.entities.length; b++)
             {
-                if (this.entities[a].TAG === EntityHandler.TAGS.NONE ||
-                    this.entities[b].TAG === EntityHandler.TAGS.NONE ||
-                    this.entities[a].LAYER === this.entities[b].LAYER)
+                let entityA = this.entities[a];
+                let entityB = this.entities[b];
+
+                if (this.haveCommonLayer(entityA, entityB))
                     continue;
 
-                let normalsA = this.getLeftNormals(this.entities[a].vertices);
-                let normalsB = this.getLeftNormals(this.entities[b].vertices);
+                let normalsA = this.getLeftNormals(entityA.vertices);
+                let normalsB = this.getLeftNormals(entityB.vertices);
 
-                let collisionA = this.checkProjectionsForCollision(this.entities[a].vertices, this.entities[b].vertices, normalsA);
-                let collisionB = this.checkProjectionsForCollision(this.entities[a].vertices, this.entities[b].vertices, normalsB);
+                let collisionA = this.checkProjectionsForCollision(entityA.vertices, entityB.vertices, normalsA);
+                let collisionB = this.checkProjectionsForCollision(entityA.vertices, entityB.vertices, normalsB);
 
                 if (collisionA && collisionB)
                 {
-                    this.entities[a].onCollide(this.entities[b]);
-                    this.entities[b].onCollide(this.entities[a]);
+                    entityA.onCollide(entityB);
+                    entityB.onCollide(entityA);
                 }
             }
         }
+    }
+
+    haveCommonLayer(entityA, entityB)
+    {
+        for (let layerA in entityA.LAYERS)
+        {
+            for (let layerB in entityB.LAYERS)
+            {
+                if (layerA === layerB)
+                    return true;
+            }
+        }
+        return false;
     }
 
     checkProjectionsForCollision(verticesA, verticesB, axisList)
@@ -118,5 +137,5 @@ export class EntityHandler
     }
 }
 
-EntityHandler.TAGS = {NONE: 0, PLAYER: 1, OPPONENT: 2, BULLET: 3};
-EntityHandler.LAYERS = {PLAYER: 0, OPPONENT: 1};
+EntityHandler.TAGS = {NONE: 0, PLAYER: 1, OPPONENT: 2};
+EntityHandler.LAYERS = {PLAYER: 0, OPPONENT: 1, BULLET: 2};

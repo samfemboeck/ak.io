@@ -2,9 +2,12 @@ import {Gun} from "./Gun.js";
 import {Vector} from "./Vector.js";
 import {EntityHandler} from "./EntityHandler.js";
 
+/**
+ * Imitates very basic player behaviour
+ */
 export class AI extends Gun
 {
-    constructor(game)
+    constructor(game, target)
     {
         super(game);
 
@@ -14,22 +17,26 @@ export class AI extends Gun
         this.attackTime = 60; // 1 second
         this.target = null;
         this.speed = 1;
+        this.fireRate = 300;
 
         this._timer = 0;
         this._isAttacking = false;
+
+        this.setTarget(target);
     }
 
     setTarget(gun)
     {
         this.target = gun;
+        this.position = Vector.add(this.target.position, new Vector(-0.25 * this.game.canvas.width, -0.25 * this.game.canvas.height));
         this.attack();
     }
 
     attack()
     {
         this._isAttacking = true;
-        this.setShooting();
         this._timer = this.attackTime;
+        this.setShooting();
     }
 
     idle()
@@ -57,8 +64,8 @@ export class AI extends Gun
         super.update();
     }
 
-    shootBullet()
+    onCollide(other)
     {
-        super.shootBullet();
+
     }
 }

@@ -4,9 +4,11 @@ import {Map} from "./Map.js";
 import {EntityHandler} from "./EntityHandler.js";
 import {AI} from "./AI.js";
 
-// TODO Collision Detection
 // TODO Health
 // TODO Bei Gun Collision beide tot
+/**
+ * Game Loop + Event Delegation
+ */
 export class Game
 {
     constructor()
@@ -29,12 +31,10 @@ export class Game
         this.map.generate();
 
         this.player = new Player(this);
-        this.entityHandler.add(this.player);
 
-        this.opponent = new AI(this);
+        this.opponent = new AI(this, this.player);
         this.opponent.position = Vector.add(this.player.position, new Vector(-0.25 * this.canvas.width, -0.25 * this.canvas.height));
         this.opponent.setTarget(this.player);
-        this.entityHandler.add(this.opponent);
 
         this.mainLoop();
     }
@@ -78,7 +78,8 @@ export class Game
 
         if (key === "l")
         {
-            this.entityHandler.checkCollisions();
+            // log something
+            console.log(this.player.rotation)
         }
 
         this.player.handleKeyDown(event.originalEvent.key)
@@ -95,7 +96,7 @@ export class Game
         if (!this.isActive) return;
 
         this.ctx.clearRect(0, 0, this.map.width, this.map.height);
-        let translateVector = this.player.velocity.invertedVector;
+        let translateVector = this.player.velocity.invertedVector; // "Camera follow"
         this.ctx.translate(translateVector.x, translateVector.y);
         this.ctx.drawImage(this.map.image, 0, 0);
 

@@ -3,6 +3,9 @@ import {Vector} from "./Vector.js";
 import {EntityHandler} from "./EntityHandler.js";
 import {Bullet} from "./Bullet.js";
 
+/**
+ * Handles Player Input
+ */
 export class Player extends Gun
 {
     constructor(game)
@@ -52,13 +55,13 @@ export class Player extends Gun
 
     onCollide(other)
     {
-
+        console.log("collision");
     }
 
     shootBullet()
     {
-        let bullet = new Bullet(this.game, {...this.game.mouseDirection}, this.speed * 5, this.rotation, {...this.position});
+        let barrelPosition = this.vertices[27];
+        let bullet = new Bullet(this.game, {...this.game.mouseDirection}, this.speed * 5, this.rotation, {...barrelPosition});
         bullet.LAYER = this.LAYER; // dont let bullet collide with this object;
-        this.game.entityHandler.add(bullet);
     }
 }
