@@ -1,5 +1,6 @@
 import {Sprite} from "./Sprite.js";
 import {CollisionHandler} from "./CollisionHandler.js";
+import {Vector} from "./Vector.js";
 
 export class Map extends Sprite
 {
@@ -13,6 +14,7 @@ export class Map extends Sprite
         this.height = height;
         this.gridSize = 100;
         this.image = this.generate();
+        this.posision = new Vector(0, 0);
     }
 
     generate()
@@ -41,6 +43,6 @@ export class Map extends Sprite
 
     draw(ctx)
     {
-        ctx.drawImage(this.image, 0, 0);
+        ctx.drawImage(this.image, this.position.x, this.position.y);
     }
 }

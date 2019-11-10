@@ -12,8 +12,8 @@ export class EntityHandler
     {
         this.game = game;
         this.entities = [];
-        this.collisionHandler = new CollisionHandler(this);
-        this.drawHandler = new DrawHandler(this);
+        this.collisionHandler = new CollisionHandler(this.game);
+        this.drawHandler = new DrawHandler(this.game);
     }
 
     add(entity)

@@ -1,8 +1,8 @@
 import {Sprite} from "./Sprite.js";
 import {Bullet} from "./Bullet.js";
-import {Vector} from "./Vector.js";
 import {MyMath} from "./MyMath.js";
 
+// TODO Bullet position bei scaling fixen
 export class Gun extends Sprite
 {
     constructor(entityHandler)
@@ -12,7 +12,7 @@ export class Gun extends Sprite
         this.speed = 3;
         this.fireRate = 200; // every 200 msecs
         this.health = 100;
-        this.scale = 4;
+        this.scale = 2;
         this.polygon = [[-2,8], [8,8], [11,5],[18,3], [20,4], [27,2], [24,-7], [12,0], [10,0], [10, -1], [12, -6], [10, -8], [8,-8], [8, -6], [6, -1], [2,2], [-8, -10], [-10, -8],
             [-2, 2], [-4,2], [-4,2], [-14,3], [-14,4], [-20,4], [-20,3], [-23,3], [-23,4], [-28,4], [-28,5], [-23,5], [-21,6], [-21,7], [-14,7], [-14,8], [-7, 8], [-7,9]];
 
@@ -35,7 +35,7 @@ export class Gun extends Sprite
 
     shootBullet()
     {
-        let barrelPosition = new Vector(this.polygon);
+        let barrelPosition = this.vertices[27];
         let bullet = new Bullet(this.entityHandler, {...this.direction}, this.speed * 5, this.rotation, {...barrelPosition});
         bullet.TAG = this.TAG;
         bullet.scale = this.scale;

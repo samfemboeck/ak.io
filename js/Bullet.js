@@ -27,6 +27,7 @@ export class Bullet extends Sprite
 
     draw(ctx)
     {
+        ctx.fillStyle = '#000';
         super.draw(ctx);
         ctx.fill();
     }

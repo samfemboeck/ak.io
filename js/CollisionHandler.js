@@ -2,9 +2,9 @@ import {Vector} from "./Vector.js";
 
 export class CollisionHandler
 {
-    constructor(entityHandler)
+    constructor(game)
     {
-        this.entityHandler = entityHandler;
+        this.game = game;
     }
 
     checkCollisions(entities)

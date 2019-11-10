@@ -4,8 +4,6 @@ import {Map} from "./Map.js";
 import {EntityHandler} from "./EntityHandler.js";
 import {AI} from "./AI.js";
 
-// TODO Health
-// TODO Bei Gun Collision beide tot
 /**
  * Game Loop + Event Delegation
  */
@@ -50,8 +48,11 @@ export class Game
     {
         this.mousePosCanvas.x = event.pageX;
         this.mousePosCanvas.y = event.pageY;
-        let transformOffset = new Vector(-this.ctx.getTransform().e, -this.ctx.getTransform().f);
-        this.mousePosWorld = Vector.add(this.mousePosCanvas, transformOffset);
+
+        let transformScaled = new Vector(this.ctx.getTransform().e * (1 / this.ctx.getTransform().a), this.ctx.getTransform().f * (1 / this.ctx.getTransform().a));
+        let mousePosScaled = Vector.times(this.mousePosCanvas, 1 / this.ctx.getTransform().a);
+        this.mousePosWorld = Vector.substract(mousePosScaled, transformScaled);
+
         this.mouseDirection = Vector.substract(this.mousePosWorld, this.player.position).unitVector;
         this.player.mouseDirection = this.mouseDirection;
     }
@@ -76,9 +77,15 @@ export class Game
 
         if (key === "l")
         {
-            // log something
-            console.log(this.entityHandler.entities)
+            console.log("player");
+            console.log(this.player.position);
+            console.log("mouse");
+            console.log(this.mousePosWorld);
         }
+        if (key === "i")
+            this.entityHandler.drawHandler.scale(0.1);
+        if(key === "o")
+            this.entityHandler.drawHandler.scale(0.75);
 
         this.player.handleKeyDown(event.originalEvent.key)
     }

@@ -1,6 +1,5 @@
 import {Vector} from "./Vector.js";
 import {MyMath} from "./MyMath.js";
-import {DrawHandler} from "./DrawHandler.js";
 
 /**
  * implements basic behaviour for a Sprite
@@ -31,8 +30,8 @@ export class Sprite
 
         for (let i in this.polygon)
         {
-            let x = DrawHandler.globalScale * this.scale * this.polygon[i][0];
-            let y = DrawHandler.globalScale * this.scale * this.polygon[i][1];
+            let x = this.scale * this.polygon[i][0];
+            let y = this.scale * this.polygon[i][1];
             let pos = new Vector(this.position.x + x, this.position.y + y);
             ret.push(MyMath.getRotatedPosition(pos, this.rotation, this.position));
         }

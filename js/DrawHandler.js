@@ -1,14 +1,16 @@
+import {Vector} from "./Vector.js"
+
 export class DrawHandler
 {
-    constructor(entityHandler)
+    constructor(game)
     {
-        this.entityHandler = entityHandler;
+        this.game = game;
     }
 
     draw(sprites)
     {
-        let ctx = this.entityHandler.game.ctx;
-        let map = this.entityHandler.game.map;
+        let ctx = this.game.ctx;
+        let map = this.game.map;
 
         ctx.clearRect(0, 0, map.width, map.height);
 
@@ -18,11 +20,25 @@ export class DrawHandler
             ctx.translate(sprite.position.x, sprite.position.y);
             ctx.rotate(sprite.rotation);
             ctx.scale(sprite.scale, sprite.scale);
-            ctx.scale(DrawHandler.globalScale, DrawHandler.globalScale);
             sprite.draw(ctx);
             ctx.restore();
         }
     }
-}
 
-DrawHandler.globalScale = 1;
+    setScale(sc)
+    {
+        let ctx = this.game.ctx;
+        let currentScale = ctx.getTransform().a;
+        if (sc === currentScale)
+            return;
+
+        let factor = (1 / currentScale) * sc;
+        ctx.scale(factor, factor);
+
+        // recenter
+        currentScale = ctx.getTransform().a;
+        let newCenter = new Vector(ctx.canvas.width / 2 * (1 / currentScale), ctx.canvas.height / 2 * (1 / currentScale));
+        let transform = Vector.times(Vector.substract(newCenter, this.game.player.position), currentScale);
+        ctx.setTransform(currentScale, 0, 0, currentScale, transform.x, transform.y);
+    }
+}
