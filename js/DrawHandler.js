@@ -1,18 +1,22 @@
 import {Vector} from "./Vector.js"
+import {Map} from "./Map.js";
 
 export class DrawHandler
 {
     constructor(game)
     {
         this.game = game;
+        this.canvas = $("#canvas")[0];
+        this.canvas.width = window.innerWidth - 4;
+        this.canvas.height = window.innerHeight - 4;
+        this.ctx = this.canvas.getContext("2d");
     }
 
     draw(sprites)
     {
-        let ctx = this.game.ctx;
-        let map = this.game.map;
-
-        ctx.clearRect(0, 0, map.width, map.height);
+        let ctx = this.ctx;
+        ctx.clearRect(0, 0, this.game.map.width, this.game.map.height);
+        ctx.drawImage(this.game.map.image, 0, 0);
 
         for (let sprite of sprites)
         {
@@ -23,22 +27,5 @@ export class DrawHandler
             sprite.draw(ctx);
             ctx.restore();
         }
-    }
-
-    setScale(sc)
-    {
-        let ctx = this.game.ctx;
-        let currentScale = ctx.getTransform().a;
-        if (sc === currentScale)
-            return;
-
-        let factor = (1 / currentScale) * sc;
-        ctx.scale(factor, factor);
-
-        // recenter
-        currentScale = ctx.getTransform().a;
-        let newCenter = new Vector(ctx.canvas.width / 2 * (1 / currentScale), ctx.canvas.height / 2 * (1 / currentScale));
-        let transform = Vector.times(Vector.substract(newCenter, this.game.player.position), currentScale);
-        ctx.setTransform(currentScale, 0, 0, currentScale, transform.x, transform.y);
     }
 }

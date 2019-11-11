@@ -2,19 +2,14 @@ import {Sprite} from "./Sprite.js";
 import {CollisionHandler} from "./CollisionHandler.js";
 import {Vector} from "./Vector.js";
 
-export class Map extends Sprite
+export class Map
 {
-    constructor(entityHandler, width, height)
+    constructor(width, height)
     {
-        super(entityHandler);
-
-        this.LAYERS = [CollisionHandler.LAYERS.NON_COLLIDABLE];
-
         this.width = width;
         this.height = height;
         this.gridSize = 100;
         this.image = this.generate();
-        this.posision = new Vector(0, 0);
     }
 
     generate()
@@ -40,9 +35,5 @@ export class Map extends Sprite
         image.src = ctx.canvas.toDataURL("image/png");
         return image;
     }
-
-    draw(ctx)
-    {
-        ctx.drawImage(this.image, this.position.x, this.position.y);
-    }
 }
+

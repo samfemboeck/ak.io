@@ -8,8 +8,9 @@ export class Sprite
 {
     constructor(entityHandler)
     {
-        this.TAG = Sprite.instances++;
+        this.TAG = Sprite.INSTANCES++;
         this.LAYERS = [];
+        this.NAME = "Sprite";
 
         this.entityHandler = entityHandler;
         this.speed = 0;
@@ -18,7 +19,7 @@ export class Sprite
         this.rotation = 0;
         this.direction = new Vector(0, 0);
         this.position = new Vector(0, 0);
-        this.polygon = [];
+        this.polygon = null;
         this.scale = 1;
 
         this.entityHandler.add(this);
@@ -28,15 +29,22 @@ export class Sprite
     {
         let ret = [];
 
-        for (let i in this.polygon)
+        let vertices = this.polygon.vertices;
+
+        for (let vertex of vertices)
         {
-            let x = this.scale * this.polygon[i][0];
-            let y = this.scale * this.polygon[i][1];
+            let x = this.scale * vertex[0];
+            let y = this.scale * vertex[1];
             let pos = new Vector(this.position.x + x, this.position.y + y);
             ret.push(MyMath.getRotatedPosition(pos, this.rotation, this.position));
         }
 
         return ret;
+    }
+
+    get bounds()
+    {
+        return Vector.times(this.polygon.bounds, this.scale);
     }
 
     get velocity()
@@ -50,18 +58,23 @@ export class Sprite
         this.position.y += this.velocity.y;
     }
 
+    /**
+     * just create the polygon path here. Let the Child Class stroke() or fill().
+     * @param ctx
+     */
     draw(ctx)
     {
-        // just create the polygon path here
-        ctx.beginPath();
-        ctx.moveTo(this.polygon[0][0], this.polygon[0][1]);
+        let vertices = this.polygon.vertices;
 
-        for (let i = 1; i < this.polygon.length; i++)
+        ctx.beginPath();
+        ctx.moveTo(vertices[0][0], vertices[0][1]);
+
+        for (let vertex of vertices)
         {
-            ctx.lineTo(this.polygon[i][0], this.polygon[i][1])
+            ctx.lineTo(vertex[0], vertex[1])
         }
 
-        ctx.lineTo(this.polygon[0][0], this.polygon[0][1]);
+        ctx.lineTo(vertices[0][0], vertices[0][1]);
         ctx.closePath();
     }
 
@@ -69,6 +82,11 @@ export class Sprite
     {
         // implement in child class
     }
+
+    shouldBeRemoved(camera)
+    {
+        return false;
+    }
 }
 
-Sprite.instances = 0;
+Sprite.INSTANCES = 0;

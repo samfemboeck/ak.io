@@ -5,6 +5,7 @@ import {CollisionHandler} from "./CollisionHandler.js";
 /**
  * Imitates very basic player behaviour
  */
+//TODO rename 'Bot'
 export class AI extends Gun
 {
     constructor(entityHandler, target)
@@ -12,6 +13,7 @@ export class AI extends Gun
         super(entityHandler);
 
         this.LAYERS = [CollisionHandler.LAYERS.OPPONENT];
+        this.NAME = "Bot";
 
         this.target = target;
         this.position = Vector.add(this.target.position, new Vector(200, 200));
@@ -23,8 +25,8 @@ export class AI extends Gun
 
     update()
     {
-        /*this.direction = Vector.substract(this.target.position, this.position).unitVector;
-        super.update();*/
+        this.direction = Vector.substract(this.target.position, this.position).unitVector;
+        //super.update();
     }
 
     shootBullet()

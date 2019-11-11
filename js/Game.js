@@ -3,58 +3,68 @@ import {Vector} from "./Vector.js";
 import {Map} from "./Map.js";
 import {EntityHandler} from "./EntityHandler.js";
 import {AI} from "./AI.js";
+import {CollisionHandler} from "./CollisionHandler.js";
+import {DrawHandler} from "./DrawHandler.js";
+import {Camera} from "./Camera.js";
 
 /**
  * Game Loop + Event Delegation
  */
+
+// TODO setter umschreiben auf ECMA6
+// TODO Event Handler
 export class Game
 {
     constructor()
     {
-        this.canvas = $("#canvas")[0];
-        this.canvas.width = window.innerWidth - 4;
-        this.canvas.height = window.innerHeight - 4;
-        this.ctx = this.canvas.getContext("2d");
-        this.mousePosCanvas = new Vector(0, 0);
-        this.mouseDirection = new Vector(0, 0);
         this.isActive = true;
         this.entityHandler = new EntityHandler(this);
+        this.collisionHandler = new CollisionHandler(this);
+        this.map = new Map(5000, 5000);
+        this.drawHandler = new DrawHandler(this);
 
         this.bindEvents();
     }
 
     start()
     {
-        this.map = new Map(this.entityHandler,5000, 5000);
-
-        this.player = new Player(this.entityHandler, this.mouseDirection);
-        this.player.position = new Vector(this.ctx.canvas.width / 2 - 0.5 * this.player.width, this.ctx.canvas.height / 2 - 0.5 * this.player.height);
-
+        this.player = new Player(this.entityHandler);
+        this.setRandomPosition(this.player);
+        this.camera = new Camera(this.drawHandler, this.player); // follow player
         this.opponent = new AI(this.entityHandler, this.player);
-
         this.mainLoop();
+    }
+
+    mainLoop()
+    {
+        window.requestAnimationFrame(() => this.mainLoop());
+        if (!this.isActive) return;
+
+        this.update();
+    }
+
+    update()
+    {
+        let sprites = this.entityHandler.update();
+        this.collisionHandler.checkCollisions(sprites);
+        this.drawHandler.draw(sprites);
+        this.camera.update();
     }
 
     bindEvents()
     {
-        $(this.canvas).mousemove($.proxy(this.handleMouse, this));
+        $(this.drawHandler.canvas).mousemove($.proxy(this.handleMouseMove, this));
         $(document).mousedown($.proxy(this.handleMouseDown, this));
         $(document).mouseup($.proxy(this.handleMouseUp, this));
         $(document).keydown($.proxy(this.handleKeyDown, this));
         $(document).keyup($.proxy(this.handleKeyUp, this));
     }
 
-    handleMouse(event)
+    handleMouseMove(event)
     {
-        this.mousePosCanvas.x = event.pageX;
-        this.mousePosCanvas.y = event.pageY;
-
-        let transformScaled = new Vector(this.ctx.getTransform().e * (1 / this.ctx.getTransform().a), this.ctx.getTransform().f * (1 / this.ctx.getTransform().a));
-        let mousePosScaled = Vector.times(this.mousePosCanvas, 1 / this.ctx.getTransform().a);
-        this.mousePosWorld = Vector.substract(mousePosScaled, transformScaled);
-
-        this.mouseDirection = Vector.substract(this.mousePosWorld, this.player.position).unitVector;
-        this.player.mouseDirection = this.mouseDirection;
+        let mousePosCanvas = new Vector(event.pageX, event.pageY);
+        let mousePosWorld = this.camera.canvasToWorldPosition(mousePosCanvas);
+        this.player.mouseDirection = Vector.substract(mousePosWorld, this.player.position).unitVector;
     }
 
     handleMouseDown()
@@ -70,6 +80,7 @@ export class Game
     handleKeyDown(event)
     {
         let key = event.originalEvent.key;
+
         if (key === "p")
         {
             this.isActive = !this.isActive;
@@ -77,15 +88,21 @@ export class Game
 
         if (key === "l")
         {
-            console.log("player");
-            console.log(this.player.position);
-            console.log("mouse");
-            console.log(this.mousePosWorld);
+            console.log(this.entityHandler.entities)
+            console.log(this.camera.position)
+            console.log(this.camera.ctxTransform)
         }
+
         if (key === "i")
-            this.entityHandler.drawHandler.scale(0.1);
-        if(key === "o")
-            this.entityHandler.drawHandler.scale(0.75);
+        {
+            this.camera.setScale(this.camera.scale + 0.05);
+            this.player.scale += 1;
+        }
+
+        if (key === "o")
+        {
+            this.camera.moveTo(Vector.add(this.camera.position, new Vector(2, 0)))
+        }
 
         this.player.handleKeyDown(event.originalEvent.key)
     }
@@ -95,14 +112,10 @@ export class Game
         this.player.handleKeyUp(event.originalEvent.key);
     }
 
-    mainLoop()
+    setRandomPosition(sprite)
     {
-        window.requestAnimationFrame(() => this.mainLoop());
-        if (!this.isActive) return;
-
-        let translateVector = this.player.velocity.invertedVector; // "Camera follow"
-        this.ctx.translate(translateVector.x, translateVector.y);
-
-        this.entityHandler.updateEntities();
+        let rndX = Math.random() * (this.map.width - sprite.width);
+        let rndY = Math.random() * (this.map.height - sprite.height);
+        sprite.position = new Vector(rndX, rndY);
     }
 }

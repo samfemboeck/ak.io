@@ -1,6 +1,8 @@
 import {Sprite} from "./Sprite.js";
 import {Bullet} from "./Bullet.js";
 import {MyMath} from "./MyMath.js";
+import {Polygon} from "./Polygon.js";
+import {Vector} from "./Vector.js";
 
 // TODO Bullet position bei scaling fixen
 export class Gun extends Sprite
@@ -9,12 +11,13 @@ export class Gun extends Sprite
     {
         super(entityHandler);
 
+        this.NAME = "Gun";
+
         this.speed = 3;
-        this.fireRate = 200; // every 200 msecs
+        this.fireRate = 300; // every 200 msecs
         this.health = 100;
         this.scale = 2;
-        this.polygon = [[-2,8], [8,8], [11,5],[18,3], [20,4], [27,2], [24,-7], [12,0], [10,0], [10, -1], [12, -6], [10, -8], [8,-8], [8, -6], [6, -1], [2,2], [-8, -10], [-10, -8],
-            [-2, 2], [-4,2], [-4,2], [-14,3], [-14,4], [-20,4], [-20,3], [-23,3], [-23,4], [-28,4], [-28,5], [-23,5], [-21,6], [-21,7], [-14,7], [-14,8], [-7, 8], [-7,9]];
+        this.polygon = new Polygon(Polygon.Gun);
 
         this._interval = null;
     }
@@ -35,10 +38,11 @@ export class Gun extends Sprite
 
     shootBullet()
     {
-        let barrelPosition = this.vertices[27];
-        let bullet = new Bullet(this.entityHandler, {...this.direction}, this.speed * 5, this.rotation, {...barrelPosition});
+        let bullet = new Bullet(this.entityHandler, {...this.direction}, this.speed * 5, this.rotation);
         bullet.TAG = this.TAG;
-        bullet.scale = this.scale;
+        bullet.scale = 0.5 * this.scale;
+        let bulletPosition = this.vertices[27]; // position of barrel vertex
+        bullet.position = Vector.substract(bulletPosition, new Vector(0, 0.5 * bullet.bounds.y));
         return bullet;
     }
 

@@ -2,6 +2,7 @@ import {CollisionHandler} from "./CollisionHandler.js";
 import {DrawHandler} from "./DrawHandler.js";
 import {Vector} from "./Vector.js";
 import {Player} from "./Player.js";
+import {Bullet} from "./Bullet.js";
 
 /**
  * Subject Class for handling updates and collisions
@@ -12,8 +13,6 @@ export class EntityHandler
     {
         this.game = game;
         this.entities = [];
-        this.collisionHandler = new CollisionHandler(this.game);
-        this.drawHandler = new DrawHandler(this.game);
     }
 
     add(entity)
@@ -32,23 +31,13 @@ export class EntityHandler
         }
     }
 
-    setRandomPosition(sprite)
-    {
-        let rndX = Math.random() * (this.game.map.width - sprite.width);
-        let rndY = Math.random() * (this.game.map.height - sprite.height);
-        sprite.position = new Vector(rndX, rndY);
-    }
-
     onKill(tag)
     {
         let entity = this.findEntityByTag(tag);
         if (entity)
         {
             entity.scale += 1;
-            if (entity instanceof Player)
-            {
-                this.drawHandler.globalScale -= 0.1;
-            }
+            this.game.drawHandler.setScale(this.game.drawHandler.getScale() - 0.1)
         }
         else
         {
@@ -66,24 +55,19 @@ export class EntityHandler
         return null;
     }
 
-    updateEntities()
+    update()
     {
         for (let i = 0; i < this.entities.length; i++)
         {
             let entity = this.entities[i];
             entity.update();
-
-            if (entity.position.x < 0 ||
-                entity.position.x > this.game.map.width ||
-                entity.position.y < 0 ||
-                entity.position.y > this.game.map.height)
-            {
-                this.entities.splice(i, 1);
+            if (entity.shouldBeRemoved(this.game.camera)){
+                console.log("deleted");
+                this.remove(entity);
             }
 
-            this.drawHandler.draw(this.entities);
         }
 
-        this.collisionHandler.checkCollisions(this.entities);
+        return this.entities;
     }
 }

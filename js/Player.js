@@ -13,7 +13,9 @@ export class Player extends Gun
         super(entityHandler);
 
         this.LAYERS = [CollisionHandler.LAYERS.PLAYER];
+        this.NAME = "Player";
 
+        // TODO moveDirection, lookDirection
         this._mouseDirection = new Vector(0, 0);
         this._moveRight = false;
         this._moveLeft = false;
