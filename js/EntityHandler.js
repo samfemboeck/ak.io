@@ -36,8 +36,8 @@ export class EntityHandler
         let entity = this.findEntityByTag(tag);
         if (entity)
         {
-            entity.scale += 1;
-            this.game.drawHandler.setScale(this.game.drawHandler.getScale() - 0.1)
+            entity.scale += 0.5;
+            this.game.camera.setScale(this.game.camera.scale - 0.1)
         }
         else
         {

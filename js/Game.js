@@ -95,7 +95,7 @@ export class Game
 
         if (key === "i")
         {
-            this.camera.setScale(this.camera.scale + 0.05);
+            this.camera.setScale(this.camera.scale - 0.05);
             this.player.scale += 1;
         }
 

@@ -48,8 +48,8 @@ export class Camera
 
     center()
     {
-        // TODO scale falscher recenter
-        this.moveTo(Vector.substract(this.target.position, new Vector(this.drawHandler.canvas.width / 2, this.drawHandler.canvas.height / 2)));
+        let pos = Vector.substract(this.target.position, new Vector(this.bounds.width / 2, this.bounds.height / 2));
+        this.moveTo(Vector.times(pos, this.scale));
     }
 
     canvasToWorldPosition(pos)
