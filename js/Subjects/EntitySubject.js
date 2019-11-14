@@ -25,20 +25,26 @@ export class EntitySubject
         }
     }
 
+    preUpdate()
+    {
+        return null; // implement in Child Class
+    }
+
     update()
     {
         for (let i = 0; i < this.entities.length; i++)
         {
             let entity = this.entities[i];
-            entity.update();
-            this.onEntityUpdate(entity);
+            let params = this.preUpdate();
+            let ret = entity.update(params);
+            this.postUpdate(ret);
         }
 
         return this.entities;
     }
 
-    onEntityUpdate(entity)
+    postUpdate(ret)
     {
-        // implement in child class
+        // implement in Child Class
     }
 }

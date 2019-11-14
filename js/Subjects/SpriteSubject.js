@@ -16,7 +16,7 @@ export class SpriteSubject extends EntitySubject
             killer.scale += 0.5;
             if (killer instanceof Player)
                 this.game.camera.setScale(this.game.camera.scale - 0.1);
-            this.game.setRandomPosition(victim);
+            victim.setRandomPosition(this.game.map);
         }
         else
         {
@@ -34,9 +34,9 @@ export class SpriteSubject extends EntitySubject
         return null;
     }
 
-    onEntityUpdate(entity)
+    postUpdate(sprite)
     {
-        if (entity.shouldBeRemoved(this.game.camera))
-            this.remove(entity);
+        if (sprite.shouldBeRemoved(this.game.camera))
+            this.remove(sprite);
     }
 }

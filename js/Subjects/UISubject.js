@@ -7,8 +7,8 @@ export class UISubject extends EntitySubject
         super(game);
     }
 
-    onEntityUpdate(uiElem)
+    preUpdate()
     {
-
+        return this.game.camera.bounds;
     }
 }

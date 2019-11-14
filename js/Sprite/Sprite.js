@@ -11,7 +11,7 @@ export class Sprite
     {
         this.TAG = Sprite.INSTANCES++;
         this.LAYERS = [];
-        this.NAME = "Sprite";
+        this.OBJECTNAME = "Sprite";
 
         this.spriteHandler = spriteHandler;
         this.speed = 0;
@@ -59,6 +59,7 @@ export class Sprite
     {
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
+        return this;
     }
 
     /**

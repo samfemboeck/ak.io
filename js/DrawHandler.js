@@ -36,7 +36,6 @@ export class DrawHandler
             ctx.save();
             ctx.translate(camBounds.min.x, camBounds.min.y);
             elem.draw(ctx);
-            ctx.fill();
             ctx.restore();
         }
     }

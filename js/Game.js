@@ -1,12 +1,13 @@
 import {Player} from "./Sprite/Player.js";
 import {Map} from "./Map.js";
 import {AI} from "./Sprite/AI.js";
-import {CollisionHandler} from "../CollisionHandler.js";
-import {DrawHandler} from "../DrawHandler.js";
+import {CollisionHandler} from "./CollisionHandler.js";
+import {DrawHandler} from "./DrawHandler.js";
 import {Camera} from "./Camera.js";
 import {SpriteSubject} from "./Subjects/SpriteSubject.js";
 import {UISubject} from "./Subjects/UISubject.js";
-import {EventHandler} from "../EventHandler.js";
+import {EventHandler} from "./EventHandler.js";
+import {Scoreboard} from "./UI/Scoreboard.js";
 
 /**
  * Game Loop + Event Delegation
@@ -32,7 +33,12 @@ export class Game
         this.player = new Player(this.spriteSubject);
         this.player.setRandomPosition(this.map);
         this.camera = new Camera(this.drawHandler, this.player);
-        this.opponent = new AI(this.spriteSubject, this.player);
+        this.scoreBoard = new Scoreboard(this.uiSubject);
+        this.scoreBoard.addGun(this.player);
+
+        for (let i = 0; i < 4; i++)
+            this.scoreBoard.addGun(new AI(this.spriteSubject, this.player));
+
         this.mainLoop();
     }
 

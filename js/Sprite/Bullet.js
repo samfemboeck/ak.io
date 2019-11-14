@@ -1,5 +1,5 @@
 import {Sprite} from "./Sprite.js";
-import {CollisionHandler} from "../../CollisionHandler.js";
+import {CollisionHandler} from "../CollisionHandler.js";
 import {Polygon} from "./Polygon.js";
 
 // TODO
@@ -10,7 +10,7 @@ export class Bullet extends Sprite
         super(spriteHandler);
 
         this.LAYERS = [CollisionHandler.LAYERS.BULLET];
-        this.NAME = "Bullet";
+        this.OBJECTNAME = "Bullet";
 
         this.direction = direction;
         this.rotation = rotation;
@@ -18,11 +18,6 @@ export class Bullet extends Sprite
         this.height = 0.5;
         this.damage = 5;
         this.polygon = new Polygon(Polygon.Bullet);
-    }
-
-    update()
-    {
-        super.update();
     }
 
     draw(ctx)

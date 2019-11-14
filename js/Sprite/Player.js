@@ -1,6 +1,6 @@
 import {Gun} from "./Gun.js";
 import {Vector} from "../Vector.js";
-import {CollisionHandler} from "../../CollisionHandler.js";
+import {CollisionHandler} from "../CollisionHandler.js";
 import {MyMath} from "../MyMath.js";
 
 /**
@@ -13,7 +13,9 @@ export class Player extends Gun
         super(spriteHandler);
 
         this.LAYERS = [CollisionHandler.LAYERS.PLAYER];
-        this.NAME = "Player";
+        this.OBJECTNAME = "Player";
+
+        this.displayName = "Player 1";
 
         // TODO moveDirection, lookDirection
         this._mouseDirection = new Vector(0, 0);
@@ -54,11 +56,12 @@ export class Player extends Gun
 
     update()
     {
-        super.update();
+        let ret = super.update();
         let moveX = this._moveRight - this._moveLeft;
         let moveY = this._moveDown - this._moveUp;
         this.direction = new Vector(moveX, moveY);
         this.rotation = MyMath.getRotationForDirection(this._mouseDirection) - 0.5 * Math.PI;
+        return ret;
     }
 
     shootBullet()

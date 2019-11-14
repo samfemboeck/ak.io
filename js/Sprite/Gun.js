@@ -10,7 +10,7 @@ export class Gun extends Sprite
     {
         super(spriteHandler);
 
-        this.NAME = "Gun";
+        this.OBJECTNAME = "Gun";
 
         this.speed = 3;
         this.fireRate = 300; // every 200 msecs
@@ -48,8 +48,9 @@ export class Gun extends Sprite
 
     update()
     {
-        super.update();
+        let ret = super.update();
         this.rotation = MyMath.getRotationForDirection(this.direction) - 0.5 * Math.PI; // standard rotation is off
+        return ret;
     }
 
     draw(ctx)

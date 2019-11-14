@@ -1,4 +1,4 @@
-import {Vector} from "./js/Vector.js";
+import {Vector} from "./Vector.js";
 
 export class CollisionHandler
 {
