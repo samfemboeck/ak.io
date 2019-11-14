@@ -1,4 +1,5 @@
-import {Vector} from "./Vector.js";
+import {Vector} from "../Vector.js";
+import {Bounds} from "../Bounds.js";
 
 export class Polygon
 {
@@ -24,7 +25,7 @@ export class Polygon
                 maxY = vertex[1];
         }
 
-        return new Vector(maxX - minX, maxY - minY);
+        return new Bounds(new Vector(0, 0), maxX - minX, maxY - minY);
     }
 }
 

@@ -1,7 +1,3 @@
-import {Sprite} from "./Sprite.js";
-import {CollisionHandler} from "./CollisionHandler.js";
-import {Vector} from "./Vector.js";
-
 export class Map
 {
     constructor(width, height)

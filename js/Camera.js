@@ -8,7 +8,7 @@ export class Camera
         this.drawHandler = drawHandler;
         this.target = target;
         this.position = new Vector(0, 0);
-        this.center();
+        this.moveTo(this.target.position);
     }
 
     get bounds()
@@ -28,28 +28,28 @@ export class Camera
         return new Vector(this.drawHandler.ctx.getTransform().e * (1 / this.scale), this.drawHandler.ctx.getTransform().f * (1 / this.scale));
     }
 
+    worldToCameraPos(pos)
+    {
+        return Vector.times(pos, this.scale);
+    }
+
     moveTo(pos)
     {
-        this.drawHandler.ctx.setTransform(this.scale, 0, 0, this.scale, -pos.x, -pos.y);
+        let cameraPos = this.worldToCameraPos(new Vector(-pos.x + 0.5 * this.bounds.width, -pos.y + 0.5 * this.bounds.height));
+        this.drawHandler.ctx.setTransform(this.scale, 0, 0, this.scale, cameraPos.x, cameraPos.y);
         this.position = pos;
     }
 
     update()
     {
-        this.center();
+        this.moveTo(this.target.position);
     }
 
     setScale(scale)
     {
         let factor = (1 / this.scale) * scale;
         this.drawHandler.ctx.scale(factor, factor);
-        this.center();
-    }
-
-    center()
-    {
-        let pos = Vector.substract(this.target.position, new Vector(this.bounds.width / 2, this.bounds.height / 2));
-        this.moveTo(Vector.times(pos, this.scale));
+        this.moveTo(this.target.position);
     }
 
     canvasToWorldPosition(pos)

@@ -1,6 +1,6 @@
 import {Gun} from "./Gun.js";
-import {Vector} from "./Vector.js";
-import {CollisionHandler} from "./CollisionHandler.js";
+import {Vector} from "../Vector.js";
+import {CollisionHandler} from "../../CollisionHandler.js";
 
 /**
  * Imitates very basic player behaviour
@@ -8,9 +8,9 @@ import {CollisionHandler} from "./CollisionHandler.js";
 //TODO rename 'Bot'
 export class AI extends Gun
 {
-    constructor(entityHandler, target)
+    constructor(spriteHandler, target)
     {
-        super(entityHandler);
+        super(spriteHandler);
 
         this.LAYERS = [CollisionHandler.LAYERS.OPPONENT];
         this.NAME = "Bot";
@@ -33,5 +33,6 @@ export class AI extends Gun
     {
         let bullet = super.shootBullet();
         bullet.LAYERS.push(CollisionHandler.LAYERS.OPPONENT);
+        bullet.strokeStyle = "#f00";
     }
 }

@@ -1,16 +1,16 @@
 import {Gun} from "./Gun.js";
-import {Vector} from "./Vector.js";
-import {CollisionHandler} from "./CollisionHandler.js";
-import {MyMath} from "./MyMath.js";
+import {Vector} from "../Vector.js";
+import {CollisionHandler} from "../../CollisionHandler.js";
+import {MyMath} from "../MyMath.js";
 
 /**
  * Handles Player Input
  */
 export class Player extends Gun
 {
-    constructor(entityHandler)
+    constructor(spriteHandler)
     {
-        super(entityHandler);
+        super(spriteHandler);
 
         this.LAYERS = [CollisionHandler.LAYERS.PLAYER];
         this.NAME = "Player";
@@ -63,8 +63,10 @@ export class Player extends Gun
 
     shootBullet()
     {
+        debugger;
         let bullet = super.shootBullet();
         bullet.direction = this._mouseDirection;
+        bullet.strokeStyle = "#25ad00";
         bullet.LAYERS.push(CollisionHandler.LAYERS.PLAYER);
     }
 }

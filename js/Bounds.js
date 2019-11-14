@@ -6,8 +6,8 @@ export class Bounds
     {
         this.width = width;
         this.height = height;
-        this.center = Vector.add(pos, new Vector(this.width / 2, this.height / 2));
-        this.min = pos;
-        this.max = Vector.add(pos, new Vector(this.width, this.height));
+        this.center = pos;
+        this.min = new Vector(this.center.x - 0.5 * this.width, this.center.y - 0.5 * this.height);
+        this.max = new Vector(this.center.x + 0.5 * this.width, this.center.y + 0.5 * this.height);
     }
 }

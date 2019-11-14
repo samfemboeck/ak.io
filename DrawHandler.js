@@ -1,6 +1,3 @@
-import {Vector} from "./Vector.js"
-import {Map} from "./Map.js";
-
 export class DrawHandler
 {
     constructor(game)
@@ -27,5 +24,26 @@ export class DrawHandler
             sprite.draw(ctx);
             ctx.restore();
         }
+    }
+
+    drawUI(uiElements)
+    {
+        let ctx = this.ctx;
+        let camBounds = this.game.camera.bounds;
+
+        for (let elem of uiElements)
+        {
+            ctx.save();
+            ctx.translate(camBounds.min.x, camBounds.min.y);
+            elem.draw(ctx);
+            ctx.fill();
+            ctx.restore();
+        }
+    }
+
+    exportImage()
+    {
+        let url = this.ctx.canvas.toDataURL();
+        window.open(url);
     }
 }

@@ -1,15 +1,14 @@
 import {Sprite} from "./Sprite.js";
 import {Bullet} from "./Bullet.js";
-import {MyMath} from "./MyMath.js";
+import {MyMath} from "../MyMath.js";
 import {Polygon} from "./Polygon.js";
-import {Vector} from "./Vector.js";
+import {Vector} from "../Vector.js";
 
-// TODO Bullet position bei scaling fixen
 export class Gun extends Sprite
 {
-    constructor(entityHandler)
+    constructor(spriteHandler)
     {
-        super(entityHandler);
+        super(spriteHandler);
 
         this.NAME = "Gun";
 
@@ -38,11 +37,12 @@ export class Gun extends Sprite
 
     shootBullet()
     {
-        let bullet = new Bullet(this.entityHandler, {...this.direction}, this.speed * 5, this.rotation);
+        let bullet = new Bullet(this.spriteHandler, {...this.direction}, this.rotation);
         bullet.TAG = this.TAG;
-        bullet.scale = 0.5 * this.scale;
+        bullet.scale = 0.7 * this.scale;
+        bullet.speed = this.speed * 5 * this.scale;
         let bulletPosition = this.vertices[27]; // position of barrel vertex
-        bullet.position = Vector.substract(bulletPosition, new Vector(0, 0.5 * bullet.bounds.y));
+        bullet.position = Vector.substract(bulletPosition, new Vector(0, 0.5 * bullet.bounds.height));
         return bullet;
     }
 
@@ -54,7 +54,6 @@ export class Gun extends Sprite
 
     draw(ctx)
     {
-        ctx.fillStyle = '#000';
         super.draw(ctx);
         ctx.fill();
 
@@ -73,7 +72,7 @@ export class Gun extends Sprite
             this.health -= other.damage;
             if (this.health <= 0)
             {
-                this.entityHandler.onKill(other.TAG);
+                this.spriteHandler.onKill(this, other.TAG);
                 this.health = 100;
             }
         }

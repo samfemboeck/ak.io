@@ -1,18 +1,19 @@
-import {Vector} from "./Vector.js";
-import {MyMath} from "./MyMath.js";
+import {Vector} from "../Vector.js";
+import {MyMath} from "../MyMath.js";
+import {Bounds} from "../Bounds.js";
 
 /**
  * implements basic behaviour for a Sprite
  */
 export class Sprite
 {
-    constructor(entityHandler)
+    constructor(spriteHandler)
     {
         this.TAG = Sprite.INSTANCES++;
         this.LAYERS = [];
         this.NAME = "Sprite";
 
-        this.entityHandler = entityHandler;
+        this.spriteHandler = spriteHandler;
         this.speed = 0;
         this.width = 0;
         this.height = 0;
@@ -21,8 +22,10 @@ export class Sprite
         this.position = new Vector(0, 0);
         this.polygon = null;
         this.scale = 1;
+        this.fillStyle = "#000";
+        this.strokeStyle = "#000";
 
-        this.entityHandler.add(this);
+        this.spriteHandler.add(this);
     }
 
     get vertices()
@@ -44,7 +47,7 @@ export class Sprite
 
     get bounds()
     {
-        return Vector.times(this.polygon.bounds, this.scale);
+        return new Bounds(this.position, this.polygon.bounds.width * this.scale, this.polygon.bounds.height * this.scale);
     }
 
     get velocity()
@@ -64,6 +67,9 @@ export class Sprite
      */
     draw(ctx)
     {
+        ctx.fillStyle = this.fillStyle;
+        ctx.strokeStyle = this.strokeStyle;
+
         let vertices = this.polygon.vertices;
 
         ctx.beginPath();
@@ -86,6 +92,13 @@ export class Sprite
     shouldBeRemoved(camera)
     {
         return false;
+    }
+
+    setRandomPosition(map)
+    {
+        let rndX = Math.random() * (map.width - this.width);
+        let rndY = Math.random() * (map.height - this.height);
+        this.position = new Vector(rndX, rndY);
     }
 }
 
