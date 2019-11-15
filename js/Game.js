@@ -37,8 +37,12 @@ export class Game
         this.scoreBoard = new Scoreboard(this.uiSubject);
         this.scoreBoard.addGun(this.player);
 
-        this.ai = new AI(this.spriteSubject, this.player);
-        this.scoreBoard.addGun(this.ai);
+        for (let i = 0; i < 6; i++)
+        {
+            let bot = new AI(this.spriteSubject, this.player);
+            bot.setRandomPosition();
+            this.scoreBoard.addGun(bot);
+        }
 
         this.messageObject = new MessageObject(this.uiSubject);
         this.messageObject.setMessage("GO!", 1000);
@@ -56,11 +60,11 @@ export class Game
 
     update()
     {
-        this.camera.update();
         let sprites = this.spriteSubject.update();
         this.collisionHandler.checkCollisions(sprites);
         this.drawHandler.draw(sprites);
         this.drawHandler.drawUI(this.uiSubject.update());
+        this.camera.update();
     }
 
     end(winner)

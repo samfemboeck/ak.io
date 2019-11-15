@@ -70,5 +70,6 @@ export class Player extends Gun
         bullet.direction = this._mouseDirection;
         bullet.strokeStyle = "#25ad00";
         bullet.LAYERS.push(CollisionHandler.LAYERS.PLAYER);
+        new Audio("wav/shot.wav").play();
     }
 }
