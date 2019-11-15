@@ -9,6 +9,6 @@ export class UISubject extends EntitySubject
 
     preUpdate()
     {
-        return this.game.camera.bounds;
+        return this.game.camera;
     }
 }

@@ -1,10 +1,12 @@
 import {Vector} from "./Vector.js";
+import {ScaleInterpolator} from "./ScaleInterpolator.js";
 
 export class EventHandler
 {
     constructor(game)
     {
         this.game = game;
+        this.mousePosWorld = null;
         this.bindEvents();
     }
 
@@ -20,8 +22,8 @@ export class EventHandler
     handleMouseMove(event)
     {
         let mousePosCanvas = new Vector(event.pageX, event.pageY);
-        let mousePosWorld = this.game.camera.canvasToWorldPosition(mousePosCanvas);
-        this.game.player.mouseDirection = Vector.substract(mousePosWorld, this.game.player.position).unitVector;
+        this.mousePosWorld = this.game.camera.canvasToWorldPosition(mousePosCanvas);
+        this.game.player.mouseDirection = Vector.substract(this.mousePosWorld, this.game.player.position).unitVector;
     }
 
     handleMouseDown()
@@ -50,19 +52,20 @@ export class EventHandler
 
         if (key === "l")
         {
-            console.log(this.game.camera.bounds);
         }
 
         if (key === "i")
         {
-            this.game.camera.setScale(this.game.camera.scale - 0.05);
-            this.game.player.scale += 1;
+            new ScaleInterpolator(this.game.player, this.game.player.scale + 3, 1000);
         }
 
         if (key === "o")
         {
             this.game.camera.moveTo(Vector.add(this.game.camera.position, new Vector(2, 0)))
         }
+
+        if (key === "e")
+            this.game.end();
 
         this.game.player.handleKeyDown(event.originalEvent.key)
     }

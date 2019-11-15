@@ -20,15 +20,16 @@ export class AI extends Gun
         this.position = Vector.add(this.target.position, new Vector(200, 200));
         this.speed = 1;
         this.fireRate = 500;
-        this.displayName = "Bot " + AI.INSTANCES;
+        this.displayName = "bot-" + AI.INSTANCES;
 
-        this.setShooting();
+        //this.setShooting();
     }
 
     update()
     {
-        this.direction = Vector.substract(this.target.position, this.position).unitVector;
-        return super.update();
+        //this.direction = Vector.substract(this.target.position, this.position).unitVector;
+        //return super.update();
+        return this;
     }
 
     shootBullet()

@@ -1,10 +1,7 @@
-2 Kill! Message
-2 man gewinnt ab bestimmter Kill-Anzahl
-2 UI
-3 Camera Translate nach center -> isCentered
-3 Slow zoom-out/scale -> Interpolator Klasse
+1 Camera Translate nach center -> isCentered
+2 Slow zoom-out/scale -> CameraScaleInterpolator Klasse
 3 Kamera followed erst nach offset
-3 Kill-Animation
 4 Soundeffekte -> SoundHandler Klasse
-5 Multiplayer
-zyan : #00FFEE
+5 Collision Detection Verbesserung (Near-Field Detection)
+5 Kill-Animation
+6 Multiplayer

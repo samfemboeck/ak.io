@@ -8,7 +8,9 @@ export class Camera
         this.drawHandler = drawHandler;
         this.target = target;
         this.position = new Vector(0, 0);
-        this.moveTo(this.target.position);
+        this.isCentered = false;
+
+        this.center();
     }
 
     get bounds()
@@ -42,7 +44,21 @@ export class Camera
 
     update()
     {
+        // translate() offers better performance than setTransform()
+        if (this.isCentered)
+        {
+            this.drawHandler.ctx.translate(-this.target.velocity.x, -this.target.velocity.y);
+        }
+        else
+        {
+            this.center();
+        }
+    }
+
+    center()
+    {
         this.moveTo(this.target.position);
+        this.isCentered = true;
     }
 
     setScale(scale)

@@ -1,5 +1,6 @@
 import {EntitySubject} from "./EntitySubject.js";
 import {Player} from "../Sprite/Player.js";
+import {ScaleInterpolator} from "../ScaleInterpolator.js";
 
 export class SpriteSubject extends EntitySubject
 {
@@ -8,15 +9,27 @@ export class SpriteSubject extends EntitySubject
         super(game);
     }
 
-    onKill(victim, tag)
+    reportKill(victim, tag)
     {
         let killer = this.findSpriteByTag(tag);
         if (killer)
         {
-            killer.scale += 0.5;
+            killer.giveKill();
+
             if (killer instanceof Player)
-                this.game.camera.setScale(this.game.camera.scale - 0.1);
-            victim.setRandomPosition(this.game.map);
+                new ScaleInterpolator(this.game.camera, this.game.camera.scale - 0.06, 500);
+
+            victim.die();
+            victim.position = {...killer.position};
+
+            if (victim instanceof Player)
+                this.game.camera.setScale(1);
+
+            this.game.messageObject.setMessage(`${killer.displayName} killed ${victim.displayName}!`, 1000);
+            this.game.scoreBoard.sort();
+
+            if (killer.kills >= 10)
+                this.game.end(killer);
         }
         else
         {

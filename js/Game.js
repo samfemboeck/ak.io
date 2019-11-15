@@ -8,6 +8,7 @@ import {SpriteSubject} from "./Subjects/SpriteSubject.js";
 import {UISubject} from "./Subjects/UISubject.js";
 import {EventHandler} from "./EventHandler.js";
 import {Scoreboard} from "./UI/Scoreboard.js";
+import {MessageObject} from "./UI/MessageObject.js";
 
 /**
  * Game Loop + Event Delegation
@@ -36,8 +37,11 @@ export class Game
         this.scoreBoard = new Scoreboard(this.uiSubject);
         this.scoreBoard.addGun(this.player);
 
-        for (let i = 0; i < 4; i++)
-            this.scoreBoard.addGun(new AI(this.spriteSubject, this.player));
+        this.ai = new AI(this.spriteSubject, this.player);
+        this.scoreBoard.addGun(this.ai);
+
+        this.messageObject = new MessageObject(this.uiSubject);
+        this.messageObject.setMessage("GO!", 1000);
 
         this.mainLoop();
     }
@@ -52,11 +56,16 @@ export class Game
 
     update()
     {
+        this.camera.update();
         let sprites = this.spriteSubject.update();
         this.collisionHandler.checkCollisions(sprites);
         this.drawHandler.draw(sprites);
-        let uiElements = this.uiSubject.update();
-        this.drawHandler.drawUI(uiElements);
-        this.camera.update();
+        this.drawHandler.drawUI(this.uiSubject.update());
+    }
+
+    end(winner)
+    {
+        this.messageObject.setMessage(winner.displayName + " wins!");
+        setTimeout(() => this.isActive = false, 10);
     }
 }

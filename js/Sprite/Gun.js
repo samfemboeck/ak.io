@@ -3,6 +3,7 @@ import {Bullet} from "./Bullet.js";
 import {MyMath} from "../MyMath.js";
 import {Polygon} from "./Polygon.js";
 import {Vector} from "../Vector.js";
+import {ScaleInterpolator} from "../ScaleInterpolator.js";
 
 export class Gun extends Sprite
 {
@@ -13,10 +14,11 @@ export class Gun extends Sprite
         this.OBJECTNAME = "Gun";
 
         this.speed = 3;
-        this.fireRate = 300; // every 200 msecs
+        this.fireRate = 100; // every 200 msecs
         this.health = 100;
         this.scale = 2;
         this.polygon = new Polygon(Polygon.Gun);
+        this.kills = 0;
 
         this._interval = null;
     }
@@ -40,7 +42,7 @@ export class Gun extends Sprite
         let bullet = new Bullet(this.spriteHandler, {...this.direction}, this.rotation);
         bullet.TAG = this.TAG;
         bullet.scale = 0.7 * this.scale;
-        bullet.speed = this.speed * 5 * this.scale;
+        bullet.speed = this.speed * this.scale;
         let bulletPosition = this.vertices[27]; // position of barrel vertex
         bullet.position = Vector.substract(bulletPosition, new Vector(0, 0.5 * bullet.bounds.height));
         return bullet;
@@ -73,9 +75,22 @@ export class Gun extends Sprite
             this.health -= other.damage;
             if (this.health <= 0)
             {
-                this.spriteHandler.onKill(this, other.TAG);
+                this.spriteHandler.reportKill(this, other.TAG);
                 this.health = 100;
             }
         }
+    }
+
+    giveKill()
+    {
+        this.kills++;
+        new ScaleInterpolator(this, this.scale + 1, 500);
+    }
+
+    die()
+    {
+        this.scale = 1;
+        this.kills = 0;
+        this.setRandomPosition();
     }
 }

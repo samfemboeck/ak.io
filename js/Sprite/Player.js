@@ -15,7 +15,7 @@ export class Player extends Gun
         this.LAYERS = [CollisionHandler.LAYERS.PLAYER];
         this.OBJECTNAME = "Player";
 
-        this.displayName = "Player 1";
+        this.displayName = "wundertuete";
 
         // TODO moveDirection, lookDirection
         this._mouseDirection = new Vector(0, 0);
@@ -66,7 +66,6 @@ export class Player extends Gun
 
     shootBullet()
     {
-        debugger;
         let bullet = super.shootBullet();
         bullet.direction = this._mouseDirection;
         bullet.strokeStyle = "#25ad00";

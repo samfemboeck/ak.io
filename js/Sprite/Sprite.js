@@ -95,11 +95,17 @@ export class Sprite
         return false;
     }
 
-    setRandomPosition(map)
+    setRandomPosition()
     {
+        let map = this.spriteHandler.game.map;
         let rndX = Math.random() * (map.width - this.width);
         let rndY = Math.random() * (map.height - this.height);
         this.position = new Vector(rndX, rndY);
+    }
+
+    setScale(scale)
+    {
+        this.scale = scale;
     }
 }
 
