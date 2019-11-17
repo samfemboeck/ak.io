@@ -5,8 +5,7 @@ import {CollisionHandler} from "../CollisionHandler.js";
 /**
  * Imitates very basic player behaviour
  */
-//TODO rename 'Bot'
-export class AI extends Gun
+export class Bot extends Gun
 {
     constructor(spriteHandler, target)
     {
@@ -14,13 +13,13 @@ export class AI extends Gun
 
         this.LAYERS = [CollisionHandler.LAYERS.OPPONENT];
         this.OBJECTNAME = "Bot";
-        AI.INSTANCES++;
+        Bot.INSTANCES++;
 
         this.target = target;
         this.position = Vector.add(this.target.position, new Vector(200, 200));
         this.speed = 1;
         this.fireRate = 500;
-        this.displayName = "bot-" + AI.INSTANCES;
+        this.displayName = "bot-" + Bot.INSTANCES;
 
         this.setShooting();
     }
@@ -39,4 +38,4 @@ export class AI extends Gun
     }
 }
 
-AI.INSTANCES = 0;
+Bot.INSTANCES = 0;

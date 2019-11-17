@@ -3,15 +3,18 @@ export class DrawHandler
     constructor(game)
     {
         this.game = game;
-        this.canvas = $("#canvas")[0];
-        this.canvas.width = window.innerWidth - 4;
-        this.canvas.height = window.innerHeight - 4;
-        this.ctx = this.canvas.getContext("2d");
+        this.canvasMain = $("#main")[0];
+        this.canvasMain.width = window.innerWidth * (4/5);
+        this.canvasMain.height = window.innerHeight;
+        this.canvasScoreboard = $("#scoreboard")[0];
+        this.canvasScoreboard.width = window.innerWidth * (1/5);
+        this.canvasScoreboard.height = window.innerHeight;
     }
 
     draw(sprites)
     {
-        let ctx = this.ctx;
+        let ctx = this.canvasMain.getContext("2d");
+
         ctx.clearRect(0, 0, this.game.map.width, this.game.map.height);
         ctx.drawImage(this.game.map.image, 0, 0);
 
@@ -28,7 +31,7 @@ export class DrawHandler
 
     drawUI(uiElements)
     {
-        let ctx = this.ctx;
+        let ctx = this.canvasMain.getContext("2d");
         let camBounds = this.game.camera.bounds;
 
         for (let elem of uiElements)
@@ -40,9 +43,15 @@ export class DrawHandler
         }
     }
 
+    drawScoreboard()
+    {
+        let ctx = this.canvasScoreboard.getContext("2d");
+        this.game.scoreBoard.draw(ctx);
+    }
+
     exportImage()
     {
-        let url = this.ctx.canvas.toDataURL();
+        let url = this.canvasMain.toDataURL();
         window.open(url);
     }
 }

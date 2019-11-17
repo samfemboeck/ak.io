@@ -57,8 +57,9 @@ export class Sprite
 
     update()
     {
-        this.position.x += this.velocity.x;
-        this.position.y += this.velocity.y;
+        this.position.x = this.position.x + this.velocity.x;
+        this.position.y = this.position.y + this.velocity.y;
+        this.position.round();
         return this;
     }
 
@@ -90,17 +91,17 @@ export class Sprite
         // implement in child class
     }
 
-    shouldBeRemoved(camera)
+    onPostUpdate(camera, map)
     {
-        return false;
+        // implement in child class
     }
 
     setRandomPosition()
     {
         let map = this.spriteHandler.game.map;
-        let rndX = Math.random() * (map.width - this.width);
-        let rndY = Math.random() * (map.height - this.height);
-        this.position = new Vector(rndX, rndY);
+        let rndX = Math.random() * (map.width - 2 * this.bounds.width);
+        let rndY = Math.random() * (map.height - 2 * this.bounds.height);
+        this.position = new Vector(rndX, rndY).round();
     }
 
     setScale(scale)

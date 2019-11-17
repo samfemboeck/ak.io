@@ -2,7 +2,6 @@ import {Sprite} from "./Sprite.js";
 import {CollisionHandler} from "../CollisionHandler.js";
 import {Polygon} from "./Polygon.js";
 
-// TODO
 export class Bullet extends Sprite
 {
     constructor(spriteHandler, direction, rotation)
@@ -31,11 +30,11 @@ export class Bullet extends Sprite
         this.spriteHandler.remove(this);
     }
 
-    shouldBeRemoved(camera)
+    onPostUpdate(camera, map)
     {
-        return this.position.x < camera.bounds.min.x ||
-            this.position.x > camera.bounds.max.x ||
-            this.position.y < camera.bounds.min.y ||
-            this.position.y > camera.bounds.max.y;
+        if (!camera.containsPosition(this.position) || !map.containsPosition(this.position))
+        {
+            this.spriteHandler.remove(this);
+        }
     }
 }

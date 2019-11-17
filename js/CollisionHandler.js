@@ -40,7 +40,6 @@ export class CollisionHandler
         {
             for (let layerB of entityB.LAYERS)
             {
-                //debugger;
                 if (layerA === CollisionHandler.LAYERS.NON_COLLIDABLE || layerB === CollisionHandler.LAYERS.NON_COLLIDABLE || layerA === layerB)
                     return false;
             }

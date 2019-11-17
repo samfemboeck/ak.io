@@ -7,7 +7,7 @@ export class MyMath
             let v = new Vector(0, 0);
             v.x = (pos.x - pivot.x) * Math.cos(radians) - (pos.y - pivot.y) * Math.sin(radians) + pivot.x;
             v.y = (pos.x - pivot.x) * Math.sin(radians) + (pos.y - pivot.y) * Math.cos(radians) + pivot.y;
-            return v.approximateEpsilon();
+            return v.round();
         }
 
         static getRotationForDirection(vector)

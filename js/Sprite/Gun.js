@@ -5,6 +5,7 @@ import {Polygon} from "./Polygon.js";
 import {Vector} from "../Vector.js";
 import {ScaleInterpolator} from "../ScaleInterpolator.js";
 import {Game} from "../Game.js";
+import {Player} from "./Player.js";
 
 export class Gun extends Sprite
 {
@@ -17,7 +18,7 @@ export class Gun extends Sprite
         this.speed = 3;
         this.fireRate = 100; // every 200 msecs
         this.health = 100;
-        this.scale = 2;
+        this.scale = 1;
         this.polygon = new Polygon(Polygon.Gun);
         this.kills = 0;
 
@@ -63,7 +64,7 @@ export class Gun extends Sprite
 
         // Health Bar
         ctx.beginPath();
-        ctx.strokeStyle = "rgba(0,255,0, 0.3)";
+        ctx.strokeStyle = this.getHealthBarColor();
         ctx.lineWidth = 10;
         ctx.arc(0, 0, 15, 0, this.health * (Math.PI / 50));
         ctx.stroke();
@@ -95,5 +96,33 @@ export class Gun extends Sprite
         this.scale = 1;
         this.kills = 0;
         this.setRandomPosition();
+    }
+
+    getHealthBarColor()
+    {
+
+        let blue = 0;
+        let green = 255;
+        let red = ((100 - this.health) / 100) * 255;
+        if (this.health <= 50)
+        {
+            green = (this.health / 50) * 255;
+        }
+        return `rgba(${red}, ${green}, ${blue}, 0.5)`
+    }
+
+    getChatColor()
+    {
+        return this instanceof Player ? "<#0f0>" : "<#AFC9FC>";
+    }
+
+    onPostUpdate(camera, map)
+    {
+        if (!map.containsPosition(this.position))
+        {
+            this.die();
+            Game.messageObject.setMessage(this.getChatColor() + this.displayName + "<#fff> has entered <#a26afc>the" +
+                " void<#fff>.");
+        }
     }
 }

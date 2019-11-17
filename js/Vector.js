@@ -9,6 +9,13 @@ export class Vector
         this.y = y;
     }
 
+    round()
+    {
+        this.x = Math.round(this.x);
+        this.y = Math.round(this.y);
+        return this;
+    }
+
     static substract(v1, v2)
     {
         return new Vector(v1.x - v2.x, v1.y - v2.y);
@@ -57,31 +64,6 @@ export class Vector
     get invertedVector()
     {
         return new Vector(-this.x, -this.y);
-    }
-
-    normalize()
-    {
-        let mag = this.magnitude;
-        this.x /= mag;
-        this.y /= mag;
-        return this;
-    }
-
-    approximateEpsilon()
-    {
-        let epsilon = 1e-15;
-
-        if (Math.abs(0 - this.x) <= epsilon)
-        {
-            this.x = 0;
-        }
-
-        if (Math.abs(0 - this.y) <= epsilon)
-        {
-            this.y = 0;
-        }
-
-        return this;
     }
 
     toString()

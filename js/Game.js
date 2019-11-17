@@ -1,6 +1,6 @@
 import {Player} from "./Sprite/Player.js";
 import {Map} from "./Map.js";
-import {AI} from "./Sprite/AI.js";
+import {Bot} from "./Sprite/Bot.js";
 import {CollisionHandler} from "./CollisionHandler.js";
 import {DrawHandler} from "./DrawHandler.js";
 import {Camera} from "./Camera.js";
@@ -13,9 +13,6 @@ import {MessageObject} from "./UI/MessageObject.js";
 /**
  * Game Loop + Event Delegation
  */
-
-// TODO setter umschreiben auf ECMA6
-// TODO Event Handler
 export class Game
 {
     constructor()
@@ -34,18 +31,23 @@ export class Game
         this.player = new Player(this.spriteSubject);
         this.player.setRandomPosition(this.map);
         this.camera = new Camera(this.drawHandler, this.player);
-        this.scoreBoard = new Scoreboard(this.uiSubject);
+        this.scoreBoard = new Scoreboard(this.drawHandler.canvasScoreboard);
         this.scoreBoard.addGun(this.player);
+
+        //this.bot = new Bot(this.spriteSubject, this.player);
 
         for (let i = 0; i < 6; i++)
         {
-            let bot = new AI(this.spriteSubject, this.player);
+            let bot = new Bot(this.spriteSubject, this.player);
             bot.setRandomPosition();
             this.scoreBoard.addGun(bot);
         }
 
-        this.messageObject = new MessageObject(this.uiSubject);
-        this.messageObject.setMessage("GO!", 1000);
+        this.drawHandler.drawScoreboard();
+
+        // use everywhere
+        Game.messageObject = new MessageObject(this.uiSubject);
+        Game.messageObject.setMessage("Go!", 2000);
 
         this.mainLoop();
     }
@@ -62,14 +64,14 @@ export class Game
     {
         let sprites = this.spriteSubject.update();
         this.collisionHandler.checkCollisions(sprites);
+        this.camera.update();
         this.drawHandler.draw(sprites);
         this.drawHandler.drawUI(this.uiSubject.update());
-        this.camera.update();
     }
 
     end(winner)
     {
-        this.messageObject.setMessage(winner.displayName + " wins!");
+        Game.messageObject.setMessage(winner.displayName + " wins!");
         setTimeout(() => this.isActive = false, 10);
     }
 }

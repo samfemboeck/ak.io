@@ -17,7 +17,6 @@ export class Player extends Gun
 
         this.displayName = "wundertuete";
 
-        // TODO moveDirection, lookDirection
         this._mouseDirection = new Vector(0, 0);
         this._moveRight = false;
         this._moveLeft = false;

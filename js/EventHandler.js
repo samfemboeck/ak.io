@@ -1,5 +1,4 @@
 import {Vector} from "./Vector.js";
-import {ScaleInterpolator} from "./ScaleInterpolator.js";
 
 export class EventHandler
 {
@@ -12,7 +11,7 @@ export class EventHandler
 
     bindEvents()
     {
-        $(this.game.drawHandler.canvas).mousemove($.proxy(this.handleMouseMove, this));
+        $(this.game.drawHandler.canvasMain).mousemove($.proxy(this.handleMouseMove, this));
         $(document).mousedown($.proxy(this.handleMouseDown, this));
         $(document).mouseup($.proxy(this.handleMouseUp, this));
         $(document).keydown($.proxy(this.handleKeyDown, this));
@@ -52,16 +51,13 @@ export class EventHandler
 
         if (key === "l")
         {
+            console.log(this.game.camera.bounds);
+            console.log(this.mousePosWorld);
         }
 
         if (key === "i")
         {
-            new ScaleInterpolator(this.game.player, this.game.player.scale + 3, 1000);
-        }
-
-        if (key === "o")
-        {
-            this.game.camera.moveTo(Vector.add(this.game.camera.position, new Vector(2, 0)))
+            this.game.spriteSubject.reportKill(this.game.bot, 0);
         }
 
         if (key === "e")

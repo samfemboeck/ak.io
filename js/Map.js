@@ -26,10 +26,22 @@ export class Map
             }
         }
 
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = "#f00";
+        ctx.strokeRect(0,0,this.width, this.height);
+
         // store the generate map as this image texture
         let image = new Image();
         image.src = ctx.canvas.toDataURL("image/png");
         return image;
+    }
+
+    containsPosition(position)
+    {
+        return !(position.x < 0 ||
+            position.x > this.width ||
+            position.y < 0 ||
+            position.y > this.height);
     }
 }
 

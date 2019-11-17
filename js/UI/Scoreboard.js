@@ -1,57 +1,70 @@
-import {UIElement} from "./UIElement.js";
 import {Player} from "../Sprite/Player.js";
 
-export class Scoreboard extends UIElement
+export class Scoreboard
 {
-    constructor(uiSubject)
+    constructor(canvas)
     {
-        super(uiSubject);
-
-        this.width = null;
-        this.height = null;
+        this.canvas = canvas;
+        this.width = canvas.width;
+        this.height = canvas.height;
+        this.entryHeight = this.height / 20;
         this.guns = [];
-    }
 
-    update(camera)
-    {
-        super.update(camera);
-        this.width = this.camBounds.width / 4;
-        this.height = this.camBounds.height / 4;
+        this.bulletImgSize = 25;
+        this.bulletImg = new Image(this.bulletImgSize, this.bulletImgSize);
+        this.bulletImg.src = "img/crosshair-white-alpha.png";
     }
 
     draw(ctx)
     {
+        this.sort();
+
+        let x = 0;
         let y = 0;
-        let entryHeight = this.height / this.guns.length;
 
-        for (let i = 1; i <= this.guns.length; i++)
+        ctx.fillStyle = "#000";
+        ctx.strokeStyle = "#414141";
+        ctx.textBaseline = "middle";
+        ctx.font = "20px Roboto";
+
+        ctx.fillRect(x, y, this.width, this.height);
+
+        for (let i = 1; i <= this.guns.length; i++, y += this.entryHeight)
         {
-            ctx.save();
-            ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
-            ctx.fillRect(0, y, this.width, entryHeight);
+            ctx.moveTo(x, y + this.entryHeight);
+            ctx.lineTo(x + this.width, y + this.entryHeight);
+            ctx.stroke();
 
-            let rankTxt = "  " + i + "  ";
-            let fontSize = 20 * (1 / this.camera.scale);
-            ctx.textBaseline = "middle";
-            ctx.font = fontSize + "px Roboto";
+            let rank = "    " + i + "    ";
             ctx.fillStyle = "#fff";
-            ctx.fillText(rankTxt, 0, y + entryHeight / 2);
-            ctx.fillStyle = this.guns[i-1] instanceof Player ? "#00FFEE" : "#fff";
-            ctx.fillText(this.guns[i-1].displayName, ctx.measureText(rankTxt).width, y + entryHeight / 2);
+            ctx.fillText(rank, x, y + this.entryHeight / 2);
 
-            let imageSize = 30 * (1 / this.camera.scale);
-            let img = new Image();
-            img.src = "img/crosshair-white-alpha.png";
-            let marginRight = ctx.measureText("  ").width;
-            let imgX = this.width - imageSize - marginRight;
-            ctx.drawImage(img, imgX, y + (0.5 * entryHeight) - (imageSize / 2), imageSize, imageSize);
+            ctx.fillStyle = this.guns[i-1] instanceof Player ? "#0f0" : "#fff";
+            ctx.fillText(this.guns[i-1].displayName, x + ctx.measureText(rank).width, y + this.entryHeight / 2);
 
             ctx.textAlign = "right";
             ctx.fillStyle = "#fff";
-            ctx.fillText(this.guns[i-1].kills, imgX - ctx.measureText("  ").width, y + 0.5 * entryHeight);
-            ctx.restore();
+            ctx.fillText(this.guns[i-1].kills, this.width - this.bulletImgSize - ctx.measureText("    ").width , y + this.entryHeight / 2);
+            ctx.textAlign = "start";
+        }
 
-            y += entryHeight;
+        if (this.bulletImg.complete)
+        {
+            this.drawBulletImages();
+        }
+        else
+        {
+            this.bulletImg.onload = this.drawBulletImages.bind(this);
+        }
+    }
+
+    drawBulletImages()
+    {
+        let ctx = this.canvas.getContext("2d");
+
+        for (let i = 0, y = 0; i < this.guns.length; i++, y += this.entryHeight)
+        {
+            ctx.drawImage(this.bulletImg, this.width - ctx.measureText("  ").width - this.bulletImgSize, y + (0.5 * this.entryHeight) - (this.bulletImgSize / 2), this.bulletImgSize, this.bulletImgSize);
         }
     }
 

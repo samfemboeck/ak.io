@@ -1,5 +1,5 @@
-1 Research Performance optimierung canvas (save(), restore() ?) http://www.firenibbler.com/2016/05/02/best-performance-tips-and-tricks-for-your-html5-canvas-games/
-2 Kamera followed erst nach offset
-3 Collision Detection Verbesserung (Near-Field Detection)
+1 Fix UI-Bug
 4 Kill-Animation
 5 Multiplayer
+2 Kamera followed erst nach offset
+3 Collision Detection Verbesserung (Near-Field Detection)
