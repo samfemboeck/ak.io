@@ -30,7 +30,7 @@ export class SpriteSubject extends EntitySubject
             }
 
             let msg = `${killer.getChatColor()}${killer.displayName} <#fff>killed ${victim.getChatColor()}${victim.displayName}<#fff>!`;
-            Game.messageObject.setMessage(msg, 1000);
+            this.game.messageObject.setMessage(msg, 1000);
 
             this.checkKillStreak(killer);
 
@@ -45,20 +45,19 @@ export class SpriteSubject extends EntitySubject
         }
     }
 
-    // TODO fix
     checkKillStreak(gun)
     {
         let msg = `${gun.getChatColor()}${gun.displayName}<#fff>: `;
         switch(gun.kills)
         {
-            case 3:
-                Game.messageObject.setMessage(msg + "<#ebff56>Killing Spree<#fff>!");
+            case 2:
+                this.game.messageObject.setMessage(msg + "<#ebff56>Killing Spree<#fff>!");
                 break;
             case 6:
-                Game.messageObject.setMessage(msg + "<#ffb85b>Rampage<#fff>!");
+                this.game.messageObject.setMessage(msg + "<#ffb85b>Rampage<#fff>!");
                 break;
             case 9:
-                Game.messageObject.setMessage(msg + "<#ff7575>Unstoppable<#fff>!");
+                this.game.messageObject.setMessage(msg + "<#ff7575>Unstoppable<#fff>!");
                 break;
         }
 

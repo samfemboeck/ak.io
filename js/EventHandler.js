@@ -51,13 +51,12 @@ export class EventHandler
 
         if (key === "l")
         {
-            console.log(this.game.camera.bounds);
-            console.log(this.mousePosWorld);
+            this.game.messageObject.setMessage("test2", 1000)
         }
 
-        if (key === "i")
+        if (key === "m")
         {
-            this.game.spriteSubject.reportKill(this.game.bot, 0);
+            this.game.messageObject.setMessage("test", 1000);
         }
 
         if (key === "e")

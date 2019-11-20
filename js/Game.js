@@ -46,8 +46,8 @@ export class Game
         this.drawHandler.drawScoreboard();
 
         // use everywhere
-        Game.messageObject = new MessageObject(this.uiSubject);
-        Game.messageObject.setMessage("Go!", 2000);
+        this.messageObject = new MessageObject(this.uiSubject);
+        this.messageObject.setMessage("Go!", 500);
 
         this.mainLoop();
     }
@@ -71,7 +71,7 @@ export class Game
 
     end(winner)
     {
-        Game.messageObject.setMessage(winner.displayName + " wins!");
+        this.messageObject.setMessage(winner.displayName + " wins!");
         setTimeout(() => this.isActive = false, 10);
     }
 }

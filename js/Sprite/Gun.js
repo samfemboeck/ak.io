@@ -9,9 +9,9 @@ import {Player} from "./Player.js";
 
 export class Gun extends Sprite
 {
-    constructor(spriteHandler)
+    constructor(spriteSubject)
     {
-        super(spriteHandler);
+        super(spriteSubject);
 
         this.OBJECTNAME = "Gun";
 
@@ -121,7 +121,7 @@ export class Gun extends Sprite
         if (!map.containsPosition(this.position))
         {
             this.die();
-            Game.messageObject.setMessage(this.getChatColor() + this.displayName + "<#fff> has entered <#a26afc>the" +
+            this.spriteHandler.game.messageObject.setMessage(this.getChatColor() + this.displayName + "<#fff> has entered <#a26afc>the" +
                 " void<#fff>.");
         }
     }

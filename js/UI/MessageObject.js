@@ -24,7 +24,6 @@ export class MessageObject extends UIElement
     {
         if (this.message.length > 0)
         {
-            debugger;
             let yOffset = 20;
             let boxHeight = this.camBounds.height / 15;
             ctx.font = 0.43 * boxHeight + "px Roboto";
@@ -82,13 +81,12 @@ export class MessageObject extends UIElement
         return ret;
     }
 
-
-    //TODO schedule message
     setMessage(msg, duration)
     {
         if (this.message.length > 0)
         {
-            setTimeout(this.setMessage.bind(this), 500);
+            let proxyMessage = this.setMessage.bind(this);
+            setTimeout(() => proxyMessage(msg, duration), 100);
         }
         else
         {
