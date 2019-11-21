@@ -1,7 +1,6 @@
 import {Player} from "./Sprite/Player.js";
 import {Map} from "./Map.js";
 import {Bot} from "./Sprite/Bot.js";
-import {CollisionHandler} from "./CollisionHandler.js";
 import {DrawHandler} from "./DrawHandler.js";
 import {Camera} from "./Camera.js";
 import {SpriteSubject} from "./Subjects/SpriteSubject.js";
@@ -9,6 +8,7 @@ import {UISubject} from "./Subjects/UISubject.js";
 import {EventHandler} from "./EventHandler.js";
 import {Scoreboard} from "./UI/Scoreboard.js";
 import {MessageObject} from "./UI/MessageObject.js";
+import {Vector} from "./Vector.js";
 
 /**
  * Game Loop + Event Delegation
@@ -20,7 +20,6 @@ export class Game
         this.isActive = true;
         this.spriteSubject = new SpriteSubject(this);
         this.uiSubject = new UISubject(this);
-        this.collisionHandler = new CollisionHandler(this);
         this.map = new Map(5000, 5000);
         this.drawHandler = new DrawHandler(this);
         this.eventHandler = new EventHandler(this);
@@ -29,12 +28,10 @@ export class Game
     start()
     {
         this.player = new Player(this.spriteSubject);
-        this.player.setRandomPosition(this.map);
+        this.player.position = new Vector(this.map.width / 2, this.map.height / 2);
         this.camera = new Camera(this.drawHandler, this.player);
         this.scoreBoard = new Scoreboard(this.drawHandler.canvasScoreboard);
         this.scoreBoard.addGun(this.player);
-
-        //this.bot = new Bot(this.spriteSubject, this.player);
 
         for (let i = 0; i < 6; i++)
         {
@@ -45,9 +42,8 @@ export class Game
 
         this.drawHandler.drawScoreboard();
 
-        // use everywhere
         this.messageObject = new MessageObject(this.uiSubject);
-        this.messageObject.setMessage("Go!", 500);
+        this.messageObject.scheduleMessage("Go!", 1000);
 
         this.mainLoop();
     }
@@ -63,7 +59,6 @@ export class Game
     update()
     {
         let sprites = this.spriteSubject.update();
-        this.collisionHandler.checkCollisions(sprites);
         this.camera.update();
         this.drawHandler.draw(sprites);
         this.drawHandler.drawUI(this.uiSubject.update());
@@ -71,7 +66,8 @@ export class Game
 
     end(winner)
     {
-        this.messageObject.setMessage(winner.displayName + " wins!");
-        setTimeout(() => this.isActive = false, 10);
+        this.messageObject.setMessage(winner.getChatColor() + winner.displayName + " <#fff>wins! <#0ff>'r'<#fff> for" +
+            " restart");
+        setTimeout(() => this.isActive = false, 50);
     }
 }

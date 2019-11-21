@@ -1,13 +1,21 @@
 import {EntitySubject} from "./EntitySubject.js";
 import {Player} from "../Sprite/Player.js";
 import {ScaleInterpolator} from "../ScaleInterpolator.js";
-import {Game} from "../Game.js";
+import {CollisionHandler} from "../CollisionHandler.js";
 
 export class SpriteSubject extends EntitySubject
 {
     constructor(game)
     {
         super(game);
+        this.collisionHandler = new CollisionHandler();
+    }
+
+    update()
+    {
+        let sprites = super.update();
+        this.collisionHandler.checkCollisions(sprites);
+        return sprites;
     }
 
     reportKill(victim, tag)
@@ -30,14 +38,16 @@ export class SpriteSubject extends EntitySubject
             }
 
             let msg = `${killer.getChatColor()}${killer.displayName} <#fff>killed ${victim.getChatColor()}${victim.displayName}<#fff>!`;
-            this.game.messageObject.setMessage(msg, 1000);
+            this.game.messageObject.scheduleMessage(msg, 2000);
 
             this.checkKillStreak(killer);
 
             this.game.drawHandler.drawScoreboard();
 
             if (killer.kills >= 10)
+            {
                 this.game.end(killer);
+            }
         }
         else
         {
@@ -48,16 +58,17 @@ export class SpriteSubject extends EntitySubject
     checkKillStreak(gun)
     {
         let msg = `${gun.getChatColor()}${gun.displayName}<#fff>: `;
+        let dur = 2000;
         switch(gun.kills)
         {
             case 2:
-                this.game.messageObject.setMessage(msg + "<#ebff56>Killing Spree<#fff>!");
+                this.game.messageObject.scheduleMessage(msg + "<#ebff56>Killing Spree<#fff>!", dur);
                 break;
             case 6:
-                this.game.messageObject.setMessage(msg + "<#ffb85b>Rampage<#fff>!");
+                this.game.messageObject.scheduleMessage(msg + "<#ffb85b>Rampage<#fff>!", dur);
                 break;
             case 9:
-                this.game.messageObject.setMessage(msg + "<#ff7575>Unstoppable<#fff>!");
+                this.game.messageObject.scheduleMessage(msg + "<#ff7575>Unstoppable<#fff>!", dur);
                 break;
         }
 

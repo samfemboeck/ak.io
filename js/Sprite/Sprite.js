@@ -7,13 +7,13 @@ import {Bounds} from "../Bounds.js";
  */
 export class Sprite
 {
-    constructor(spriteHandler)
+    constructor(spriteSubject)
     {
         this.TAG = Sprite.INSTANCES++;
         this.LAYERS = [];
         this.OBJECTNAME = "Sprite";
 
-        this.spriteHandler = spriteHandler;
+        this.spriteSubject = spriteSubject;
         this.speed = 0;
         this.width = 0;
         this.height = 0;
@@ -25,7 +25,7 @@ export class Sprite
         this.fillStyle = "#000";
         this.strokeStyle = "#000";
 
-        this.spriteHandler.add(this);
+        this.spriteSubject.add(this);
     }
 
     get vertices()
@@ -98,7 +98,7 @@ export class Sprite
 
     setRandomPosition()
     {
-        let map = this.spriteHandler.game.map;
+        let map = this.spriteSubject.game.map;
         let rndX = Math.random() * (map.width - 2 * this.bounds.width);
         let rndY = Math.random() * (map.height - 2 * this.bounds.height);
         this.position = new Vector(rndX, rndY).round();

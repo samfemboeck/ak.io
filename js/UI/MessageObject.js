@@ -81,7 +81,7 @@ export class MessageObject extends UIElement
         return ret;
     }
 
-    setMessage(msg, duration)
+    scheduleMessage(msg, duration)
     {
         if (this.message.length > 0)
         {
@@ -90,10 +90,15 @@ export class MessageObject extends UIElement
         }
         else
         {
-            this.message = msg.split(this.regex);
+            this.setMessage(msg);
             if (duration)
                 setTimeout(() => this.unsetMessage(), duration);
         }
+    }
+
+    setMessage(msg)
+    {
+        this.message = msg.split(this.regex);
     }
 
     unsetMessage()

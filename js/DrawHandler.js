@@ -3,10 +3,10 @@ export class DrawHandler
     constructor(game)
     {
         this.game = game;
-        this.canvasMain = $("#main")[0];
+        this.canvasMain = document.getElementById("main");
         this.canvasMain.width = window.innerWidth * (4/5);
         this.canvasMain.height = window.innerHeight;
-        this.canvasScoreboard = $("#scoreboard")[0];
+        this.canvasScoreboard = document.getElementById("scoreboard");
         this.canvasScoreboard.width = window.innerWidth * (1/5);
         this.canvasScoreboard.height = window.innerHeight;
     }

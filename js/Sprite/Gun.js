@@ -4,7 +4,6 @@ import {MyMath} from "../MyMath.js";
 import {Polygon} from "./Polygon.js";
 import {Vector} from "../Vector.js";
 import {ScaleInterpolator} from "../ScaleInterpolator.js";
-import {Game} from "../Game.js";
 import {Player} from "./Player.js";
 
 export class Gun extends Sprite
@@ -41,7 +40,7 @@ export class Gun extends Sprite
 
     shootBullet()
     {
-        let bullet = new Bullet(this.spriteHandler, {...this.direction}, this.rotation);
+        let bullet = new Bullet(this.spriteSubject, {...this.direction}, this.rotation);
         bullet.TAG = this.TAG;
         bullet.scale = 0.7 * this.scale;
         bullet.speed = this.speed * 5;
@@ -78,7 +77,7 @@ export class Gun extends Sprite
             this.health -= other.damage;
             if (this.health <= 0)
             {
-                this.spriteHandler.reportKill(this, other.TAG);
+                this.spriteSubject.reportKill(this, other.TAG);
                 this.health = 100;
             }
         }
@@ -121,7 +120,8 @@ export class Gun extends Sprite
         if (!map.containsPosition(this.position))
         {
             this.die();
-            this.spriteHandler.game.messageObject.setMessage(this.getChatColor() + this.displayName + "<#fff> has entered <#a26afc>the" +
+            this.spriteSubject.game.messageObject.scheduleMessage(this.getChatColor() + this.displayName + "<#fff> has entered" +
+                " <#a26afc>the" +
                 " void<#fff>.");
         }
     }

@@ -11,11 +11,11 @@ export class EventHandler
 
     bindEvents()
     {
-        $(this.game.drawHandler.canvasMain).mousemove($.proxy(this.handleMouseMove, this));
-        $(document).mousedown($.proxy(this.handleMouseDown, this));
-        $(document).mouseup($.proxy(this.handleMouseUp, this));
-        $(document).keydown($.proxy(this.handleKeyDown, this));
-        $(document).keyup($.proxy(this.handleKeyUp, this));
+        this.game.drawHandler.canvasMain.addEventListener("mousemove", this.handleMouseMove.bind(this));
+        document.addEventListener("mousedown", this.handleMouseDown.bind(this));
+        document.addEventListener("mouseup", this.handleMouseUp.bind(this));
+        document.addEventListener("keydown", this.handleKeyDown.bind(this));
+        document.addEventListener("keyup", this.handleKeyUp.bind(this));
     }
 
     handleMouseMove(event)
@@ -37,11 +37,20 @@ export class EventHandler
 
     handleKeyDown(event)
     {
-        let key = event.originalEvent.key;
+        let key = event.key;
 
         if (key === "p")
         {
-            this.game.isActive = !this.game.isActive;
+            if (this.game.isActive)
+            {
+                this.game.messageObject.setMessage("Paused");
+                setTimeout(() => this.game.isActive = !this.game.isActive, 50);
+            }
+            else
+            {
+                this.game.messageObject.unsetMessage();
+                this.game.isActive = true;
+            }
         }
 
         if (key === "f")
@@ -49,24 +58,21 @@ export class EventHandler
             this.game.drawHandler.exportImage();
         }
 
-        if (key === "l")
-        {
-            this.game.messageObject.setMessage("test2", 1000)
-        }
-
-        if (key === "m")
-        {
-            this.game.messageObject.setMessage("test", 1000);
-        }
-
         if (key === "e")
-            this.game.end();
+        {
+            this.game.end(this.game.player);
+        }
 
-        this.game.player.handleKeyDown(event.originalEvent.key)
+        if (key === "r")
+        {
+            window.location.reload();
+        }
+
+        this.game.player.handleKeyDown(event.key)
     }
 
     handleKeyUp(event)
     {
-        this.game.player.handleKeyUp(event.originalEvent.key);
+        this.game.player.handleKeyUp(event.key);
     }
 }

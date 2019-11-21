@@ -4,9 +4,9 @@ import {Polygon} from "./Polygon.js";
 
 export class Bullet extends Sprite
 {
-    constructor(spriteHandler, direction, rotation)
+    constructor(spriteSubject, direction, rotation)
     {
-        super(spriteHandler);
+        super(spriteSubject);
 
         this.LAYERS = [CollisionHandler.LAYERS.BULLET];
         this.OBJECTNAME = "Bullet";
@@ -27,14 +27,14 @@ export class Bullet extends Sprite
 
     onCollide(other)
     {
-        this.spriteHandler.remove(this);
+        this.spriteSubject.remove(this);
     }
 
     onPostUpdate(camera, map)
     {
         if (!camera.containsPosition(this.position) || !map.containsPosition(this.position))
         {
-            this.spriteHandler.remove(this);
+            this.spriteSubject.remove(this);
         }
     }
 }

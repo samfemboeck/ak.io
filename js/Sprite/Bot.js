@@ -7,9 +7,9 @@ import {CollisionHandler} from "../CollisionHandler.js";
  */
 export class Bot extends Gun
 {
-    constructor(spriteHandler, target)
+    constructor(spriteSubject, target)
     {
-        super(spriteHandler);
+        super(spriteSubject);
 
         this.LAYERS = [CollisionHandler.LAYERS.OPPONENT];
         this.OBJECTNAME = "Bot";

@@ -1,5 +1,0 @@
-1 Fix UI-Bug
-4 Kill-Animation
-5 Multiplayer
-2 Kamera followed erst nach offset
-3 Collision Detection Verbesserung (Near-Field Detection)

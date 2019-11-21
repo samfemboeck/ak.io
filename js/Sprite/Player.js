@@ -8,14 +8,14 @@ import {MyMath} from "../MyMath.js";
  */
 export class Player extends Gun
 {
-    constructor(spriteHandler)
+    constructor(spriteSubject)
     {
-        super(spriteHandler);
+        super(spriteSubject);
 
         this.LAYERS = [CollisionHandler.LAYERS.PLAYER];
-        this.OBJECTNAME = "Player";
+        this.OBJECTNAME = "Player 1";
 
-        this.displayName = "wundertuete";
+        this.displayName = "player1";
 
         this._mouseDirection = new Vector(0, 0);
         this._moveRight = false;
