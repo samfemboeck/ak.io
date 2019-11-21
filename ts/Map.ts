@@ -1,6 +1,13 @@
+import {Vector} from "./Vector.js"
+
 export class Map
 {
-    constructor(width, height)
+    width: number;
+    height: number;
+    gridSize: number;
+    image: HTMLImageElement;
+
+    constructor(width: number, height: number)
     {
         this.width = width;
         this.height = height;
@@ -8,7 +15,7 @@ export class Map
         this.image = this.generate();
     }
 
-    generate()
+    generate(): HTMLImageElement
     {
         let ctx = document.createElement("canvas").getContext("2d");
         ctx.canvas.width = this.width;
@@ -16,7 +23,7 @@ export class Map
 
         ctx.strokeStyle = "gray";
 
-        let columnSize = this.width / this.gridSize;
+        let columnSize: number = this.width / this.gridSize;
 
         for (let y = 0; y < this.height; y += columnSize)
         {
@@ -36,7 +43,7 @@ export class Map
         return image;
     }
 
-    containsPosition(position)
+    containsPosition(position: Vector): boolean
     {
         return !(position.x < 0 ||
             position.x > this.width ||

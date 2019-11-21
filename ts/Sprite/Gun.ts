@@ -5,58 +5,56 @@ import {Polygon} from "./Polygon.js";
 import {Vector} from "../Vector.js";
 import {ScaleInterpolator} from "../ScaleInterpolator.js";
 import {Player} from "./Player.js";
+import {SpriteSubject} from "./SpriteSubject.js";
 
 export class Gun extends Sprite
 {
-    constructor(spriteSubject)
+    polygon: Polygon = Polygon.GUN;
+    fireRate: number = 100;
+    health: number = 100;
+    kills: number = 0;
+    displayName: string = "N/A";
+    private interval: number = null;
+
+    constructor(subj: SpriteSubject)
     {
-        super(spriteSubject);
-
-        this.OBJECTNAME = "Gun";
-
+        super(subj);
         this.speed = 3;
-        this.fireRate = 100; // every 200 msecs
-        this.health = 100;
-        this.scale = 1;
-        this.polygon = new Polygon(Polygon.Gun);
-        this.kills = 0;
-
-        this._interval = null;
     }
 
-    setShooting()
+    setShooting(): void
     {
         this.shootBullet();
-        this._interval = setInterval(() => this.shootBullet(), this.fireRate);
+        this.interval = setInterval(() => this.shootBullet(), this.fireRate);
     }
 
-    unsetShooting()
+    unsetShooting(): void
     {
-        if (this._interval)
+        if (this.interval)
         {
-            clearInterval(this._interval);
+            clearInterval(this.interval);
         }
     }
 
-    shootBullet()
+    shootBullet(): Bullet
     {
-        let bullet = new Bullet(this.spriteSubject, {...this.direction}, this.rotation);
-        bullet.TAG = this.TAG;
+        let bullet = new Bullet(this.subject, new Vector(this.direction.x, this.direction.y), this.rotation);
+        bullet.tag = this.tag;
         bullet.scale = 0.7 * this.scale;
         bullet.speed = this.speed * 5;
-        let bulletPosition = this.vertices[27]; // position of barrel vertex
+        let bulletPosition: Vector = this.vertices[27]; // position of barrel vertex
         bullet.position = Vector.substract(bulletPosition, new Vector(0, 0.5 * bullet.bounds.height));
         return bullet;
     }
 
-    update()
+    update(): this
     {
-        let ret = super.update();
+        super.update();
         this.rotation = MyMath.getRotationForDirection(this.direction) - 0.5 * Math.PI; // standard rotation is off
-        return ret;
+        return this;
     }
 
-    draw(ctx)
+    draw(ctx: CanvasRenderingContext2D): void
     {
         super.draw(ctx);
         ctx.fill();
@@ -69,7 +67,7 @@ export class Gun extends Sprite
         ctx.stroke();
     }
 
-    onCollide(other)
+    onCollide(other: Sprite): void
     {
         if (other instanceof Bullet)
         {
@@ -77,27 +75,26 @@ export class Gun extends Sprite
             this.health -= other.damage;
             if (this.health <= 0)
             {
-                this.spriteSubject.reportKill(this, other.TAG);
+                this.subject.reportKill(this, other.tag);
                 this.health = 100;
             }
         }
     }
 
-    giveKill()
+    giveKill(): void
     {
         this.kills++;
         new ScaleInterpolator(this, this.scale + 1, 500);
-
     }
 
-    die()
+    die(): void
     {
         this.scale = 1;
         this.kills = 0;
         this.setRandomPosition();
     }
 
-    getHealthBarColor()
+    getHealthBarColor(): string
     {
 
         let blue = 0;
@@ -110,19 +107,20 @@ export class Gun extends Sprite
         return `rgba(${red}, ${green}, ${blue}, 0.5)`
     }
 
-    getChatColor()
+    getChatColor(): string
     {
         return this instanceof Player ? "<#0f0>" : "<#AFC9FC>";
     }
 
-    onPostUpdate(camera, map)
+    onPostUpdate(camera, map): void
     {
         if (!map.containsPosition(this.position))
         {
             this.die();
-            this.spriteSubject.game.messageObject.scheduleMessage(this.getChatColor() + this.displayName + "<#fff> has entered" +
+            this.subject.game.messageObject.scheduleMessage(this.getChatColor() + this.displayName + "<#fff> has" +
+                " entered" +
                 " <#a26afc>the" +
-                " void<#fff>.");
+                " void<#fff>.", 1000);
         }
     }
 }

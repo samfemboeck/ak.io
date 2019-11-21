@@ -1,21 +1,25 @@
-import {Player} from "../Sprite/Player.js";
+import {Player} from "./Sprite/Player.js";
+import {Gun} from "./Sprite/Gun.js";
 
 export class Scoreboard
 {
-    constructor(canvas)
+    width: number;
+    height: number;
+    entryHeight: number;
+    guns: Gun[] = [];
+    bulletImgSize: number = 25;
+    bulletImg: HTMLImageElement;
+
+    constructor(public canvas: HTMLCanvasElement)
     {
-        this.canvas = canvas;
         this.width = canvas.width;
         this.height = canvas.height;
         this.entryHeight = this.height / 20;
-        this.guns = [];
-
-        this.bulletImgSize = 25;
         this.bulletImg = new Image(this.bulletImgSize, this.bulletImgSize);
         this.bulletImg.src = "img/crosshair-white-alpha.png";
     }
 
-    draw(ctx)
+    draw(ctx): void
     {
         this.sort();
 
@@ -35,7 +39,7 @@ export class Scoreboard
             ctx.lineTo(x + this.width, y + this.entryHeight);
             ctx.stroke();
 
-            let rank = "    " + i + "    ";
+            let rank: string = "    " + i + "    ";
             ctx.fillStyle = "#fff";
             ctx.fillText(rank, x, y + this.entryHeight / 2);
 
@@ -44,7 +48,7 @@ export class Scoreboard
 
             ctx.textAlign = "right";
             ctx.fillStyle = "#fff";
-            ctx.fillText(this.guns[i-1].kills, this.width - this.bulletImgSize - ctx.measureText("    ").width , y + this.entryHeight / 2);
+            ctx.fillText(this.guns[i-1].kills + "", this.width - this.bulletImgSize - ctx.measureText("    ").width , y + this.entryHeight / 2);
             ctx.textAlign = "start";
         }
 
@@ -58,7 +62,7 @@ export class Scoreboard
         }
     }
 
-    drawBulletImages()
+    drawBulletImages(): void
     {
         let ctx = this.canvas.getContext("2d");
 
@@ -68,12 +72,12 @@ export class Scoreboard
         }
     }
 
-    sort()
+    sort(): void
     {
         this.guns.sort((a, b) => (a.kills > b.kills) ? -1 : 1);
     }
 
-    addGun(gun)
+    addGun(gun: Gun): void
     {
         this.guns.push(gun);
     }

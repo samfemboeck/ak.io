@@ -3,18 +3,26 @@ import {Map} from "./Map.js";
 import {Bot} from "./Sprite/Bot.js";
 import {DrawHandler} from "./DrawHandler.js";
 import {Camera} from "./Camera.js";
-import {SpriteSubject} from "./Subjects/SpriteSubject.js";
-import {UISubject} from "./Subjects/UISubject.js";
+import {SpriteSubject} from "./Sprite/SpriteSubject.js";
+import {UISubject} from "./UI/UISubject.js";
 import {EventHandler} from "./EventHandler.js";
-import {Scoreboard} from "./UI/Scoreboard.js";
+import {Scoreboard} from "./Scoreboard.js";
 import {MessageObject} from "./UI/MessageObject.js";
 import {Vector} from "./Vector.js";
 
-/**
- * Game Loop + Event Delegation
- */
 export class Game
 {
+    isActive: boolean = true;
+    spriteSubject: SpriteSubject;
+    uiSubject: UISubject;
+    map: Map;
+    drawHandler: DrawHandler;
+    eventHandler: EventHandler;
+    player: Player;
+    camera: Camera;
+    scoreBoard: Scoreboard;
+    messageObject: MessageObject;
+
     constructor()
     {
         this.isActive = true;
@@ -25,12 +33,13 @@ export class Game
         this.eventHandler = new EventHandler(this);
     }
 
-    start()
+    start(): void
     {
         this.player = new Player(this.spriteSubject);
         this.player.position = new Vector(this.map.width / 2, this.map.height / 2);
         this.camera = new Camera(this.drawHandler, this.player);
         this.scoreBoard = new Scoreboard(this.drawHandler.canvasScoreboard);
+        debugger;
         this.scoreBoard.addGun(this.player);
 
         for (let i = 0; i < 6; i++)
@@ -48,7 +57,7 @@ export class Game
         this.mainLoop();
     }
 
-    mainLoop()
+    mainLoop(): void
     {
         window.requestAnimationFrame(() => this.mainLoop());
         if (!this.isActive) return;
@@ -56,7 +65,7 @@ export class Game
         this.update();
     }
 
-    update()
+    update(): void
     {
         let sprites = this.spriteSubject.update();
         this.camera.update();
@@ -64,7 +73,7 @@ export class Game
         this.drawHandler.drawUI(this.uiSubject.update());
     }
 
-    end(winner)
+    end(winner): void
     {
         this.messageObject.setMessage(winner.getChatColor() + winner.displayName + " <#fff>wins! <#0ff>'r'<#fff> for" +
             " restart");

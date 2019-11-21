@@ -1,15 +1,18 @@
 import {Vector} from "./Vector.js";
+import {Game} from "./Game.js";
 
 export class EventHandler
 {
-    constructor(game)
+    game: Game;
+    mousePosWorld: Vector = null;
+
+    constructor(game: Game)
     {
         this.game = game;
-        this.mousePosWorld = null;
         this.bindEvents();
     }
 
-    bindEvents()
+    bindEvents(): void
     {
         this.game.drawHandler.canvasMain.addEventListener("mousemove", this.handleMouseMove.bind(this));
         document.addEventListener("mousedown", this.handleMouseDown.bind(this));
@@ -18,26 +21,26 @@ export class EventHandler
         document.addEventListener("keyup", this.handleKeyUp.bind(this));
     }
 
-    handleMouseMove(event)
+    handleMouseMove(event): void
     {
         let mousePosCanvas = new Vector(event.pageX, event.pageY);
         this.mousePosWorld = this.game.camera.canvasToWorldPosition(mousePosCanvas);
         this.game.player.mouseDirection = Vector.substract(this.mousePosWorld, this.game.player.position).unitVector;
     }
 
-    handleMouseDown()
+    handleMouseDown(): void
     {
         this.game.player.setShooting();
     }
 
-    handleMouseUp()
+    handleMouseUp(): void
     {
         this.game.player.unsetShooting();
     }
 
-    handleKeyDown(event)
+    handleKeyDown(event): void
     {
-        let key = event.key;
+        let key: string = event.key;
 
         if (key === "p")
         {
@@ -71,7 +74,7 @@ export class EventHandler
         this.game.player.handleKeyDown(event.key)
     }
 
-    handleKeyUp(event)
+    handleKeyUp(event): void
     {
         this.game.player.handleKeyUp(event.key);
     }

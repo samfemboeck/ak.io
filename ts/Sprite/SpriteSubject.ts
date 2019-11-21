@@ -1,26 +1,27 @@
-import {EntitySubject} from "./EntitySubject.js";
 import {Player} from "../Sprite/Player.js";
 import {ScaleInterpolator} from "../ScaleInterpolator.js";
 import {CollisionHandler} from "../CollisionHandler.js";
+import {Subject} from "../Subject.js";
+import {Sprite} from "./Sprite.js";
+import {Gun} from "./Gun.js";
+import {Game} from "../Game.js";
 
-export class SpriteSubject extends EntitySubject
+export class SpriteSubject extends Subject<Sprite>
 {
-    constructor(game)
-    {
-        super(game);
-        this.collisionHandler = new CollisionHandler();
-    }
+    collisionHandler = new CollisionHandler();
 
-    update()
+    public constructor (public game: Game){ super(game); }
+
+    update(): Sprite[]
     {
         let sprites = super.update();
         this.collisionHandler.checkCollisions(sprites);
         return sprites;
     }
 
-    reportKill(victim, tag)
+    reportKill(victim: Gun, tag: number)
     {
-        let killer = this.findSpriteByTag(tag);
+        let killer: Gun = this.findGunByTag(tag);
         if (killer)
         {
             killer.giveKill();
@@ -55,11 +56,11 @@ export class SpriteSubject extends EntitySubject
         }
     }
 
-    checkKillStreak(gun)
+    checkKillStreak(g: Gun)
     {
-        let msg = `${gun.getChatColor()}${gun.displayName}<#fff>: `;
+        let msg = `${g.getChatColor()}${g.displayName}<#fff>: `;
         let dur = 2000;
-        switch(gun.kills)
+        switch (g.kills)
         {
             case 2:
                 this.game.messageObject.scheduleMessage(msg + "<#ebff56>Killing Spree<#fff>!", dur);
@@ -74,19 +75,23 @@ export class SpriteSubject extends EntitySubject
 
     }
 
-    findSpriteByTag(tag)
+    findGunByTag(tag): Gun
     {
-        for (let entity of this.entities)
+        for (let sprite of this.observers)
         {
-            if (entity.TAG === tag)
-                return entity;
+            if (sprite instanceof Gun && sprite.tag == tag)
+            {
+                return sprite;
+            }
         }
         return null;
     }
 
-
-    postUpdate(sprite)
+    postUpdate(s: Sprite)
     {
-        sprite.onPostUpdate(this.game.camera, this.game.map);
+        s.onPostUpdate(this.game.camera, this.game.map);
+    }
+
+    preUpdate(): any {
     }
 }

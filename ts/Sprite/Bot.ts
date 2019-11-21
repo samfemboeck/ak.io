@@ -1,41 +1,40 @@
 import {Gun} from "./Gun.js";
 import {Vector} from "../Vector.js";
 import {CollisionHandler} from "../CollisionHandler.js";
+import {SpriteSubject} from "./SpriteSubject.js";
+import {Bullet} from "./Bullet.js";
 
 /**
  * Imitates very basic player behaviour
  */
 export class Bot extends Gun
 {
-    constructor(spriteSubject, target)
+    static INSTANCES = 0;
+    private target: Gun;
+
+    constructor(subj: SpriteSubject, target: Gun)
     {
-        super(spriteSubject);
-
-        this.LAYERS = [CollisionHandler.LAYERS.OPPONENT];
-        this.OBJECTNAME = "Bot";
+        super(subj);
         Bot.INSTANCES++;
-
+        this.addLayer(CollisionHandler.LAYER.OPPONENT);
         this.target = target;
-        this.position = Vector.add(this.target.position, new Vector(200, 200));
         this.speed = 1;
         this.fireRate = 500;
         this.displayName = "bot-" + Bot.INSTANCES;
-
         this.setShooting();
     }
 
-    update()
+    update(): this
     {
         this.direction = Vector.substract(this.target.position, this.position).unitVector;
         return super.update();
     }
 
-    shootBullet()
+    shootBullet(): Bullet
     {
         let bullet = super.shootBullet();
-        bullet.LAYERS.push(CollisionHandler.LAYERS.OPPONENT);
+        bullet.addLayer(CollisionHandler.LAYER.OPPONENT);
         bullet.strokeStyle = "#f00";
+        return bullet;
     }
 }
-
-Bot.INSTANCES = 0;

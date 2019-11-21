@@ -3,38 +3,26 @@ import {Vector} from "../Vector.js";
 
 export class MessageObject extends UIElement
 {
-    constructor(uiSubject)
-    {
-        super(uiSubject);
+    private message: string[] = [];
+    private readonly regex = new RegExp("<(#\\w{3,6})>", "g");
+    private readonly regexHexValue = new RegExp("#\\w{3,6}");
+    private readonly boxMargin = 200;
+    private readonly yOffset = 20;
 
-        this.message = [];
-        this.regex = new RegExp("<(#\\w{3,6})>", "g");
-        this.regexHexValue = new RegExp("#\\w{3,6}");
-        this.boxMargin = 200;
-        this.yOffset = 50;
-        this.fontColor = "#fff";
-    }
-
-    update(camera)
-    {
-        super.update(camera);
-    }
-
-    draw(ctx)
+    draw(ctx: CanvasRenderingContext2D): void
     {
         if (this.message.length > 0)
         {
-            let yOffset = 20;
             let boxHeight = this.camBounds.height / 15;
             ctx.font = 0.43 * boxHeight + "px Roboto";
             ctx.textBaseline = "middle";
-            let textWidth = ctx.measureText(this.getMessageString()).width;
+            let textWidth = ctx.measureText(this.getMessage()).width;
             let boxWidth = textWidth + 2 * this.boxMargin;
             ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
-            this.roundRect(ctx, this.camBounds.width / 2 - boxWidth / 2, yOffset, boxWidth, boxHeight);
+            this.roundRect(ctx, this.camBounds.width / 2 - boxWidth / 2, this.yOffset, boxWidth, boxHeight);
 
             ctx.fillStyle = "#fff";
-            let pos = new Vector(this.camBounds.width / 2 - textWidth / 2, yOffset + boxHeight / 2);
+            let pos = new Vector(this.camBounds.width / 2 - textWidth / 2, this.yOffset + boxHeight / 2);
             for (let part of this.message)
             {
                 if (this.regexHexValue.test(part))
@@ -50,7 +38,7 @@ export class MessageObject extends UIElement
         }
     }
 
-    roundRect(ctx, x, y, width, height)
+    roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, width: number, height: number)
     {
         let radius = height / 2;
         ctx.beginPath();
@@ -70,7 +58,7 @@ export class MessageObject extends UIElement
         ctx.fill();
     }
 
-    getMessageString()
+    getMessage(): string
     {
         let ret = "";
         for (let part of this.message)
@@ -81,7 +69,7 @@ export class MessageObject extends UIElement
         return ret;
     }
 
-    scheduleMessage(msg, duration)
+    scheduleMessage(msg: string, duration: number): void
     {
         if (this.message.length > 0)
         {
@@ -96,7 +84,7 @@ export class MessageObject extends UIElement
         }
     }
 
-    setMessage(msg)
+    setMessage(msg: string)
     {
         this.message = msg.split(this.regex);
     }

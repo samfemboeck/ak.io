@@ -2,7 +2,13 @@ import {Vector} from "./Vector.js";
 
 export class Bounds
 {
-    constructor(pos, width, height)
+    width: number;
+    height: number;
+    center: Vector;
+    min: Vector;
+    max: Vector;
+
+    constructor(pos: Vector, width: number, height: number)
     {
         this.width = width;
         this.height = height;

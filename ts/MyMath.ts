@@ -2,7 +2,7 @@ import {Vector} from "./Vector.js";
 
 export class MyMath
 {
-        static getRotatedPosition(pos, radians, pivot)
+        static getRotatedPosition(pos: Vector, radians: number, pivot: Vector): Vector
         {
             let v = new Vector(0, 0);
             v.x = (pos.x - pivot.x) * Math.cos(radians) - (pos.y - pivot.y) * Math.sin(radians) + pivot.x;
@@ -10,9 +10,9 @@ export class MyMath
             return v.round();
         }
 
-        static getRotationForDirection(vector)
+        static getRotationForDirection(dir: Vector): number
         {
-            return -Math.atan2(vector.x, vector.y);
+            return -Math.atan2(dir.x, dir.y);
         }
 }
 

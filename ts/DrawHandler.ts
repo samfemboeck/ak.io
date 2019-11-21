@@ -1,17 +1,26 @@
+import {Game} from "./Game.js"
+import {Sprite} from "./Sprite/Sprite.js"
+import {UIElement} from "./UI/UIElement.js"
+import {Bounds} from "./Bounds.js";
+
 export class DrawHandler
 {
+    game: Game;
+    canvasMain: HTMLCanvasElement;
+    canvasScoreboard: HTMLCanvasElement;
+
     constructor(game)
     {
         this.game = game;
-        this.canvasMain = document.getElementById("main");
+        this.canvasMain = <HTMLCanvasElement> document.getElementById("main");
         this.canvasMain.width = window.innerWidth * (4/5);
         this.canvasMain.height = window.innerHeight;
-        this.canvasScoreboard = document.getElementById("scoreboard");
+        this.canvasScoreboard = <HTMLCanvasElement> document.getElementById("scoreboard");
         this.canvasScoreboard.width = window.innerWidth * (1/5);
         this.canvasScoreboard.height = window.innerHeight;
     }
 
-    draw(sprites)
+    draw(sprites: Sprite[]): void
     {
         let ctx = this.canvasMain.getContext("2d");
 
@@ -29,10 +38,10 @@ export class DrawHandler
         }
     }
 
-    drawUI(uiElements)
+    drawUI(uiElements: UIElement[]): void
     {
         let ctx = this.canvasMain.getContext("2d");
-        let camBounds = this.game.camera.bounds;
+        let camBounds: Bounds = this.game.camera.bounds;
 
         for (let elem of uiElements)
         {
@@ -43,13 +52,13 @@ export class DrawHandler
         }
     }
 
-    drawScoreboard()
+    drawScoreboard(): void
     {
         let ctx = this.canvasScoreboard.getContext("2d");
         this.game.scoreBoard.draw(ctx);
     }
 
-    exportImage()
+    exportImage(): void
     {
         let url = this.canvasMain.toDataURL();
         window.open(url);
